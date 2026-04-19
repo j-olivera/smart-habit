@@ -85,3 +85,16 @@ OLLAMA_MODEL=llama3
 ### Interfaz de usuario
 
 - Se deja a criterio de la IA el diseño de la interfaz de usuario, pero debe seguir los lineamientos de S.O.L.I.D, y Clean Architecture.
+
+
+## Orden de features
+0. [feature] database-setup
+0. [feature] docker-setup
+1. [feature] user-register-backend
+2. [feature] user-login-backend
+3. [feature] user-register-habit-daily-backend
+4. [feature] ia-report-generator-backend
+5. [feature] user-register-frontend
+6. [feature] user-login-frontend
+7. [feature] user-register-habit-daily-frontend
+8. [feature] ia-report-generator-frontend
