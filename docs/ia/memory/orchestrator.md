@@ -11,7 +11,7 @@
 - agente-backend -> endpoints REST, servicios java, reglas de negocio, spring security, entidades, repositorios, controladores, servicios.
 - agente-frontend -> componentes angular, servicios angular, rutas angular, formularios reactivos.
 - agente-db -> schema SQL
-- agente-qa -> test unitarios(Junit 5, Mockito), test de integracion(Spring Boot Test), Test E2E(Playwright), Test Angular(Jest)
+- agente-qa -> test unitarios(Junit 5, Mockito), test de integracion(Spring Boot Test), Test E2E(Playwright), Test Angular(Vitest)
 
 No implementes codigo si la tarea pertenece a uno de estos sub-agentes, coordina y controla la consistencia entre capas
 

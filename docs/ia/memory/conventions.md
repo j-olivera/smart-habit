@@ -29,7 +29,7 @@
 - Signals -> Usar signals para el manejo de estado
 - HttpClient -> Usar HttpClient para las peticiones HTTP
 - Lazy loading en todas las rutas de las features
-- Testing Unitario -> Usar Jest (más rápido que Karma/Jasmine, ideal para CI/CD)
+- Testing Unitario -> Usar Vitest (runner por defecto de Angular 21, más rápido que Karma/Jasmine)
 - Testing E2E -> Usar Playwright (para testear los flujos críticos como el registro de hábitos)
 
 ### Docker (Despliegue / Entorno)

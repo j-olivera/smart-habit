@@ -49,6 +49,7 @@ frontend/src/app/
 - Interceptor HTTP único para adjuntar JWT a todos los requests
 - Guard de autenticación en rutas protegidas
 - Guard de rol para rutas de admin (si aplica)
+- Testing Unitario -> Usar Vitest (runner por defecto de Angular 21)
 
 ## Lineamientos de formularios
 

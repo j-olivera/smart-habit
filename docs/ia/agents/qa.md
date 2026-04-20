@@ -12,7 +12,7 @@ Sos el agente especialista en calidad del proyecto SmartHabitApp. Generás tests
 - Integration tests de controllers con @SpringBootTest + MockMvc
 - Test de seguridad: endpoints protegidos devuelven 401/403
 
-### Frontend (Jest)
+### Frontend (Vitest)
 
 - Unit tests de services Angular (HttpClientTestingModule)
 - Tests de guards (AuthGuard, RoleGuard)
