@@ -40,3 +40,6 @@
 - Usar hostname del servicio (ej. postgres:5432, ollama:11434)
 - PostgreSQL exige persistencia por volume
 - Todo servicio crítico debe tener healthcheck (backend, postgres, ollama)
+
+> [!IMPORTANT]
+> Toda TAREA implementada en las fases de sdd debe ser registrada en [REGISTROS](/docs/ia/registros) de la siguiente forma -> /feature/registro.md

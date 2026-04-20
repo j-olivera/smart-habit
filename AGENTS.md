@@ -12,3 +12,5 @@ Este archivo actúa como el índice principal para el comportamiento, identidad 
 
 > [!IMPORTANT]
 > Todo agente que opere en este repositorio DEBE leer y respetar las directivas especificadas en estos documentos antes de ejecutar cualquier cambio.
+
+

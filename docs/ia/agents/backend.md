@@ -20,13 +20,17 @@ GET  /api/habits/summary → resumen semanal generado por IA
 
 
 ## Estructura de packages
-controller/ solo recibe request, delega al service, retorna DTO 
-service/ lógica de negocio, validaciones, orquesta repositorios 
-repository/ Spring Data JPA, queries JPQL cuando haga falta 
-model/ entidades JPA (nunca salen del service) 
-dto/ request y response DTOs, mapeados con MapStruct 
-security/ JwtFilter, SecurityConfig 
-exception/ GlobalExceptionHandler + excepciones custom 
+domain/ core de la aplicacion, entidades puras
+    exceptions/ excepciones custom
+application/ dtos(request,response)casos de uso, port in para las interfaces y out para los repositorios, mapper de entidad a dto
+infrastructure/
+    controller/ solo recibe request, delega al service, retorna DTO 
+    adapter/ implementa el puerto de salida 
+    repository/ Spring Data JPA, queries JPQL cuando haga falta 
+    model/ entidades JPA (nunca salen del service) 
+    mapper/ mappers para jpa -> entidad y viceversa 
+    security/ JwtFilter, SecurityConfig 
+    exception/ GlobalExceptionHandler
 ## Seguridad obligatoria
 - Todos los endpoints protegidos con @PreAuthorize o SecurityConfig 
 - /api/auth/** es el único path público 
