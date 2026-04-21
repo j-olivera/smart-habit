@@ -28,6 +28,12 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        return jpaUserRepository.findById(id)
+                .map(userEntityMapper::toDomain);
+    }
+
+    @Override
     public User save(User user) {
         var entity = userEntityMapper.toEntity(user);
         var savedEntity = jpaUserRepository.save(entity);

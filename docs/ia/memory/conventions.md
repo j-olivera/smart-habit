@@ -10,7 +10,7 @@
 
 
 > [!IMPORTANT]
-> Toda TAREA implementada en las fases de sdd debe ser registrada en [REGISTROS](/docs/ia/registros) de la siguiente forma -> /feature/registro.md
+> Toda feature implementada con sdd debe ser registrada en [REGISTROS](/docs/ia/registros) de la siguiente forma -> /feature/registro.md
 
 
 ### Generales
