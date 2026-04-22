@@ -6,7 +6,7 @@ import com.smart.smart_backend.application.mapper.UserMapper;
 import com.smart.smart_backend.application.port.in.RegisterUserUseCase;
 import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

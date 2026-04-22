@@ -1,7 +1,7 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.infrastructure.mapper.UserEntityMapper;
 import com.smart.smart_backend.infrastructure.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;

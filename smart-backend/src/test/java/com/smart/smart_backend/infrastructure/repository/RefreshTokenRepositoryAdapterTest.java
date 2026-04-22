@@ -1,7 +1,6 @@
 package com.smart.smart_backend.infrastructure.repository;
 
-import com.smart.smart_backend.domain.RefreshToken;
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
 import com.smart.smart_backend.infrastructure.adapter.RefreshTokenRepositoryAdapter;
 import com.smart.smart_backend.infrastructure.mapper.RefreshTokenEntityMapperImpl;
 import com.smart.smart_backend.infrastructure.model.UserEntity;

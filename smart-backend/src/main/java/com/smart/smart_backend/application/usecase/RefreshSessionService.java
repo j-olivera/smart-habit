@@ -5,8 +5,8 @@ import com.smart.smart_backend.application.port.in.RefreshSessionUseCase;
 import com.smart.smart_backend.application.port.out.JwtProviderPort;
 import com.smart.smart_backend.application.port.out.RefreshTokenRepositoryPort;
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
-import com.smart.smart_backend.domain.RefreshToken;
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
+import com.smart.smart_backend.domain.model.user.User;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

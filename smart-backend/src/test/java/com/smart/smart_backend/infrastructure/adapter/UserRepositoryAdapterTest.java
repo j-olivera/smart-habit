@@ -1,6 +1,6 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.infrastructure.repository.JpaUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

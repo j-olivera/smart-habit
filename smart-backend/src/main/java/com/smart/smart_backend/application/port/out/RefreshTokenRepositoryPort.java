@@ -1,6 +1,6 @@
 package com.smart.smart_backend.application.port.out;
 
-import com.smart.smart_backend.domain.RefreshToken;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
 
 import java.util.Optional;
 

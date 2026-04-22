@@ -1,7 +1,7 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
 import com.smart.smart_backend.application.port.out.RefreshTokenRepositoryPort;
-import com.smart.smart_backend.domain.RefreshToken;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
 import com.smart.smart_backend.infrastructure.mapper.RefreshTokenEntityMapper;
 import com.smart.smart_backend.infrastructure.model.RefreshTokenEntity;
 import com.smart.smart_backend.infrastructure.repository.JpaRefreshTokenRepository;

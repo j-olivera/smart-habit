@@ -2,7 +2,7 @@ package com.smart.smart_backend.application.usecase;
 
 import com.smart.smart_backend.application.port.in.LogoutUserUseCase;
 import com.smart.smart_backend.application.port.out.RefreshTokenRepositoryPort;
-import com.smart.smart_backend.domain.RefreshToken;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
 
 public class LogoutUserService implements LogoutUserUseCase {
 

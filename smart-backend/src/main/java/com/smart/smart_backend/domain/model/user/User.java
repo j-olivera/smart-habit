@@ -1,4 +1,4 @@
-package com.smart.smart_backend.domain;
+package com.smart.smart_backend.domain.model.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

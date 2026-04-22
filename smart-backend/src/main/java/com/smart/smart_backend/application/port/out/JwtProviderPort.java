@@ -1,6 +1,6 @@
 package com.smart.smart_backend.application.port.out;
 
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.user.User;
 
 public interface JwtProviderPort {
     String generateToken(User user);

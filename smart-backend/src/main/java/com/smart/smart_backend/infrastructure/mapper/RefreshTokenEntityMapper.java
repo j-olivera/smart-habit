@@ -1,6 +1,6 @@
 package com.smart.smart_backend.infrastructure.mapper;
 
-import com.smart.smart_backend.domain.RefreshToken;
+import com.smart.smart_backend.domain.model.token.RefreshToken;
 import com.smart.smart_backend.infrastructure.model.RefreshTokenEntity;
 import com.smart.smart_backend.infrastructure.model.UserEntity;
 import org.mapstruct.Mapper;

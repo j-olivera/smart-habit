@@ -4,7 +4,7 @@ import com.smart.smart_backend.application.dto.RegisterRequestDto;
 import com.smart.smart_backend.application.dto.UserResponseDto;
 import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
-import com.smart.smart_backend.domain.User;
+import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
