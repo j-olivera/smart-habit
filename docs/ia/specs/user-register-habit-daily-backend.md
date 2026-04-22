@@ -7,134 +7,141 @@ Logica para que el usuario registre un DailyLog por dia, con habitos opcionales.
 - POST /api/habits/daily → registro de hábitos de un día específico
 - GET  /api/habits/daily/{date} → hábitos cargados de un día
 - GET  /api/habits/weekly → hábitos de la semana actual
-- GET  /api/habits/summary → resumen semanal generado por IA
+- GET  /api/habits/summary → resumen semanal (IA pendiente de especificar)
 
 ### Request Body
- - Para los casos COMPLETADOS
+ - Para casos COMPLETADOS
 ```json
-    [{
-      "Day": "MONDAY",
-      "Training" : {
-        "completed" : true,
-        "hours" : 2,
-        "muscularGroup" : "BACK",
-        "energy" : 75
-      }
-    },
-    { 
-      "Day": "MONDAY",
-      "Study": {
-        "completed" : true,
-        "hours" : 2,
-        "theme": "Angular"
-      }
-    },
-    {
-      "Day" : "MONDAY",
-      "Food" : {
-        "expectation" : "GOOD",
-        "observation" : {
-          "boolean": true,
-          "considerations": "Yes, very good"
-        }
-      }
-    },
-    {
-      "Day" : "MONDAY",
-      "Status/Sociality" : {
-        "feeling" : "HAPPY",
-        "observation" : {
-          "boolean" : true,
-          "dayActions" : "I meet a girl"
-        },
-        "socialAction" : {
-          "boolean" : true,
-          "whoPerson" : "with a girl of my university"
-        }
-      }
-    },
-    {
-      "Day" : "MONDAY",
-      "Sleepy" : {
-        "time" : 6.5,
-        "feeling" : "BAD",
-        "nap" : {
-          "boolean" : true,
-          "hours" : 1
-        }
-      }
-    }
-]
-```
-- Casos de NO COMPLETADOS
-```json
-[
-  {
-    "Day": "MONDAY",
-    "Training": {
-      "completed": false,
-      "reason": "I had no time today"
+{
+  "day": "MONDAY",
+  "training": {
+    "completed": true,
+    "hours": 2,
+    "muscularGroup": "BACK",
+    "energy": 75
+  },
+  "study": {
+    "completed": true,
+    "hours": 2,
+    "theme": "Angular"
+  },
+  "food": {
+    "expectation": "GOOD",
+    "observation": {
+      "completed": true,
+      "considerations": "Yes, very good"
     }
   },
-  {
-    "Day": "MONDAY",
-    "Study": {
-      "completed": false,
-      "reason": "I was too tired after work"
+  "mood": {
+    "feeling": "HAPPY",
+    "observation": {
+      "completed": true,
+      "dayActions": "I meet a girl"
+    },
+    "socialAction": {
+      "completed": true,
+      "whoPerson": "with a girl of my university"
     }
   },
-  {
-    "Day": "MONDAY",
-    "Food": {
-      "expectation": "REGULAR",
-      "observation": {
-        "boolean": false
-      }
-    }
-  },
-  {
-    "Day": "MONDAY",
-    "Status/Sociality": {
-      "feeling": "NEUTRAL",
-      "observation": {
-        "boolean": false
-      },
-      "socialAction": {
-        "boolean": false
-      }
-    }
-  },
-  {
-    "Day": "MONDAY",
-    "Sleepy": {
-      "time": 6.5,
-      "feeling": "REGULAR",
-      "nap": {
-        "boolean": false
-      }
+  "sleep": {
+    "hours": 6.5,
+    "feeling": "BAD",
+    "nap": {
+      "completed": true,
+      "hours": 1
     }
   }
-]
+}
 ```
-### Expected Responses
-- 201 Created: Return a dailyLog complete
-- 400 Bad Request: Retorna datos invalidos en algun habito
+ - Casos de NO COMPLETADOS
+```json
+{
+  "day": "MONDAY",
+  "training": {
+    "completed": false,
+    "reason": "I had no time today"
+  },
+  "study": {
+    "completed": false,
+    "reason": "I was too tired after work"
+  },
+  "food": {
+    "expectation": "REGULAR",
+    "observation": {
+      "completed": false
+    }
+  },
+  "mood": {
+    "feeling": "NEUTRAL",
+    "observation": {
+      "completed": false
+    },
+    "socialAction": {
+      "completed": false
+    }
+  },
+  "sleep": {
+    "hours": 6.5,
+    "feeling": "REGULAR",
+    "nap": {
+      "completed": false
+    }
+  }
+}
+```
 
-## 4 - Bussines Restrictions (Backend)
-- No puede haber valores nulos ni vacios en ningun atributo
+### ENUM Values (mayúsculas)
+- **day**: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+- **muscularGroup**: CHEST, BACK, LEGS, ARMS, ABDOMEN, CARDIO
+- **energy**: 1-100 (int)
+- **expectation**: POOR, REGULAR, GOOD, EXCELLENT
+- **feeling**:
+  - sleep: BAD, REGULAR, GOOD, EXCELLENT
+  - mood: SAD, DOWN, NEUTRAL, HAPPY, EUPHORIC
+- **completed**: true/false (boolean)
+
+### Response Format
+```json
+{
+  "success": true,
+  "message": "Daily log registered successfully",
+  "data": {
+    "id": "uuid",
+    "userId": "uuid",
+    "day": "MONDAY",
+    "date": "2026-04-21",
+    "training": {...},
+    "study": {...},
+    "food": {...},
+    "mood": {...},
+    "sleep": {...},
+    "createdAt": "timestamp"
+  }
+}
+```
+
+### Expected Status Codes
+- 200 OK: Daily log registered/retrieved successfully
+- 400 Bad Request: Datos inválidos en algún hábito
+- 401 Unauthorized: JWT no válido o expirado
+
+## 4 - Business Restrictions (Backend)
+- No puede haber valores nulos ni vacíos en campos requeridos
 - No se permiten caracteres fuera de ASCII
-- Las horas en cada habito deben ser coherentes: estudio <=12 | entreno <=4 | sueño <= 12 | siesta <= 4
-- El dailyLog no se considera completo si falta algun atributo en cualquiera de los habitos, retornando error 400 (Bad Request)
+- Límites de horas: study <= 12 | training <= 4 | sleep <= 12 | nap <= 4
+- El diariaLog no se considera completo si falta algún atributo requerido en cualquiera de los hábitos, retornando error 400
 
 ## 5 - Technical Guidelines
 - Respeta los lineamientos del proyecto: Clean Architecture | SOLID
-- No se debe exponer datos criticos del user en el endpoint
-- La capa dominio|application esta excluida de dependencias y frameworks externos
+- No se debe exponer datos críticos del user en el endpoint
+- La capa dominio|application está excluida de dependencias y frameworks externos
+- Todos los endpoints requieren autenticación JWT
+- Formato de respuesta: ApiResponse<T> según conventions.md
 
 ## 6 - Acceptance Criteria
-- Escenario 1 : Entrega Exitosa
-    - Dado que el usuario cumplio con las exigencias pedidas en los use case, el sistema devuelve el estado 200 OK, armando el json con los datos correspondientes
-- Escenario 2 : Falta de datos
-    - Dado que el usuario no completo algun campo de cualquier habito registrable, el sistema no crea el json correspondiente y devulve un error 400 BAD REQUEST
-- Escenario 3 : Caracteres invalidos
-    - Dado que el usuario completo todos los campos de los atributos para los habitos registrables, pero utilizo caracteres fuera de ASCII, el sistema no genera el json correspondiente y devuelve error 400 BAD REQUEST
+- Escenario 1: Entrega Exitosa
+  - Dado que el usuario completó todos los campos requeridos, el sistema devuelve estado 200 OK con el dailyLog registrado
+- Escenario 2: Falta de datos
+  - Dado que el usuario no completó algún campo requerido, el sistema devuelve error 400 BAD REQUEST
+- Escenario 3: Caracteres inválidos
+  - Dado que el usuario usó caracteres fuera de ASCII, el sistema devuelve error 400 BAD REQUEST
