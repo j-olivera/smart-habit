@@ -28,6 +28,7 @@ frontend/src/app/
   core/            → servicios singleton (AuthService, interceptors, guards)
   shared/          → componentes reutilizables (dumb components), pipes, directivas
   layout/          → header, footer, sidebar, shell de navegación
+  enviroments/     → environment.ts, .ts global para url del backend
   features/
     auth/          → login, register, forgot-password (lazy loaded)
     user/          → perfil, edición de datos (lazy loaded)

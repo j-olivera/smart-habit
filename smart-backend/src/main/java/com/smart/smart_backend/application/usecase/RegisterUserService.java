@@ -37,6 +37,6 @@ public class RegisterUserService implements RegisterUserUseCase {
                 .createdAt(LocalDateTime.now())
                 .build();
         User saveUser = userRepositoryPort.save(newUser);
-        return UserMapper.toUserResponseDto(saveUser);
+        return UserMapper.toDto(saveUser);
     }
 }

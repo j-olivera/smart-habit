@@ -91,7 +91,7 @@ OLLAMA_MODEL=llama3
 0. [feature] database-setup
 1. [feature] docker-setup
 2. [feature] user-register-backend
-3. [feature] user-login-backend
+3. [feature] user-login-backend 
 4. [feature] user-register-habit-daily-backend
 5. [feature] ia-report-generator-backend
 6. [feature] user-register-frontend

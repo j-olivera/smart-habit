@@ -12,7 +12,6 @@
 > [!IMPORTANT]
 > Toda feature implementada con sdd debe ser registrada en [REGISTROS](/docs/ia/registros) de la siguiente forma -> /feature/registro.md
 
-
 ### Generales
 
 - Testing (TDD) -> Ninguna funcionalidad se considera terminada si no tiene sus tests correspondientes pasando R -> G -> R 
