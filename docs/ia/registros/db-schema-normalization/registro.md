@@ -44,3 +44,25 @@ erDiagram
 
 ## Archivo de Migración
 - `smart-backend/src/main/resources/db/migration/V8__normalize_habits_structure.sql`
+
+## Motivo de la normalización
+- Para ver que habitos tenía un usuario, simpre tenes que pasar por el log diario con el flujo Usuario -> DailyEntry -> habit_
+- Ahora con la tabla habits el flujo es asi. Usuario -> Habit (Independiente del dia) | Usuario -> DailyEntry -> HabitLog (que referencia al Habit)
+
+## Principal diferencia
+- Antes
+```mermaid
+    Habit {
+    id: 1
+    userId: 42
+    name: "Rutina de gym"
+    type: EXERCISE
+    active: true
+    }
+```
+- Después
+```mermaid
+    ExerciseLog { habitId: 1, entryId: lunes,   exercised: true,  hours: 1 }
+    ExerciseLog { habitId: 1, entryId: martes,  exercised: false, skipReason: "me lastimé" }
+    ExerciseLog { habitId: 1, entryId: miércoles, exercised: true, hours: 2 }
+```
