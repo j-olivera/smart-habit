@@ -1,147 +1,108 @@
 # Feature 4 - user-register-habit-daily-backend
 
 ## 2 - Description
-Logica para que el usuario registre un DailyLog por dia, con habitos opcionales.
+Lógica para que el usuario gestione sus hábitos y registre sus progresos diarios de forma atómica. 
+El flujo consiste en:
+1. Crear una entrada diaria (`DailyEntry`).
+2. Registrar logs específicos para cada hábito asociado a ese día.
 
-## 3 - EndPoint
-- POST /api/habits/daily → registro de hábitos de un día específico
-- GET  /api/habits/daily/{date} → hábitos cargados de un día
-- GET  /api/habits/weekly → hábitos de la semana actual
-- GET  /api/habits/summary → resumen semanal (IA pendiente de especificar)
+## 3 - EndPoints
 
-### Request Body
- - Para casos COMPLETADOS
+### A. Gestión de Definiciones (Habit)
+- `POST /api/habits` → Crear definición de hábito.
+- `GET /api/habits` → Listar mis hábitos activos.
+- `DELETE /api/habits/{id}` → Desactivar hábito (soft delete).
+
+### B. Registro Diario (DailyEntry & Logs)
+- `POST /api/habits/daily` → Crear entrada para un día específico.
+- `GET /api/habits/daily/{date}` → Obtener el día con todos sus logs (formato agrupado).
+- `POST /api/habits/daily/{entryId}/logs/exercise` → Registrar/reemplazar log de ejercicio.
+- `POST /api/habits/daily/{entryId}/logs/study` → Registrar/reemplazar log de estudio.
+- `POST /api/habits/daily/{entryId}/logs/sleep` → Registrar/reemplazar log de sueño.
+- `POST /api/habits/daily/{entryId}/logs/nutrition` → Registrar/reemplazar log de nutrición.
+- `POST /api/habits/daily/{entryId}/logs/mood` → Registrar/reemplazar log de ánimo.
+
+---
+
+### Request Bodies (Ejemplos clave)
+
+#### POST /api/habits/daily
 ```json
 {
-  "day": "MONDAY",
-  "training": {
-    "completed": true,
-    "hours": 2,
-    "muscularGroup": "BACK",
-    "energy": 75
-  },
-  "study": {
-    "completed": true,
-    "hours": 2,
-    "theme": "Angular"
-  },
-  "food": {
-    "expectation": "GOOD",
-    "observation": {
-      "completed": true,
-      "considerations": "Yes, very good"
-    }
-  },
-  "mood": {
-    "feeling": "HAPPY",
-    "observation": {
-      "completed": true,
-      "dayActions": "I meet a girl"
-    },
-    "socialAction": {
-      "completed": true,
-      "whoPerson": "with a girl of my university"
-    }
-  },
-  "sleep": {
-    "hours": 6.5,
-    "feeling": "BAD",
-    "nap": {
-      "completed": true,
-      "hours": 1
-    }
-  }
-}
-```
- - Casos de NO COMPLETADOS
-```json
-{
-  "day": "MONDAY",
-  "training": {
-    "completed": false,
-    "reason": "I had no time today"
-  },
-  "study": {
-    "completed": false,
-    "reason": "I was too tired after work"
-  },
-  "food": {
-    "expectation": "REGULAR",
-    "observation": {
-      "completed": false
-    }
-  },
-  "mood": {
-    "feeling": "NEUTRAL",
-    "observation": {
-      "completed": false
-    },
-    "socialAction": {
-      "completed": false
-    }
-  },
-  "sleep": {
-    "hours": 6.5,
-    "feeling": "REGULAR",
-    "nap": {
-      "completed": false
-    }
-  }
+  "date": "2026-04-21"
 }
 ```
 
-### ENUM Values (mayúsculas)
-- **day**: MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+#### POST /api/habits/daily/{entryId}/logs/exercise
+```json
+{
+  "habitId": 1,
+  "exercised": true,
+  "hours": 1.5,
+  "muscularGroup": "CHEST",
+  "energyLevel": 80
+}
+```
+
+#### POST /api/habits/daily/{entryId}/logs/study
+```json
+{
+  "habitId": 2,
+  "studied": true,
+  "hours": 2.0,
+  "subject": "Java Hexagonal Architecture"
+}
+```
+
+---
+
+### ENUM Values (Coincidentes con Dominio)
 - **muscularGroup**: CHEST, BACK, LEGS, ARMS, ABDOMEN, CARDIO
-- **energy**: 1-100 (int)
-- **expectation**: POOR, REGULAR, GOOD, EXCELLENT
-- **feeling**:
-  - sleep: BAD, REGULAR, GOOD, EXCELLENT
-  - mood: SAD, DOWN, NEUTRAL, HAPPY, EUPHORIC
-- **completed**: true/false (boolean)
+- **moodLevel**: SAD, DOWN, NEUTRAL, HAPPY, EUPHORIC
+- **nutritionRating**: POOR, REGULAR, GOOD, EXCELLENT
+- **sleepQuality**: BAD, REGULAR, GOOD, EXCELLENT
+- **habitType**: STUDY, EXERCISE, NUTRITION, MOOD, SLEEP
 
-### Response Format
+---
+
+### Response Format (Agrupado para GET /api/habits/daily/{date})
 ```json
 {
   "success": true,
-  "message": "Daily log registered successfully",
+  "message": "Daily entry retrieved successfully",
   "data": {
-    "id": "uuid",
-    "userId": "uuid",
-    "day": "MONDAY",
+    "id": 10,
     "date": "2026-04-21",
-    "training": {...},
-    "study": {...},
-    "food": {...},
-    "mood": {...},
-    "sleep": {...},
-    "createdAt": "timestamp"
+    "logs": {
+      "exercise": { "id": 1, "hours": 1.5, ... },
+      "study": null,
+      "sleep": { "id": 5, "hours": 7.0, ... }
+    }
   }
 }
 ```
 
-### Expected Status Codes
-- 200 OK: Daily log registered/retrieved successfully
-- 400 Bad Request: Datos inválidos en algún hábito
-- 401 Unauthorized: JWT no válido o expirado
-
 ## 4 - Business Restrictions (Backend)
-- No puede haber valores nulos ni vacíos en campos requeridos
-- No se permiten caracteres fuera de ASCII
-- Límites de horas: study <= 12 | training <= 4 | sleep <= 12 | nap <= 4
-- El diariaLog no se considera completo si falta algún atributo requerido en cualquiera de los hábitos, retornando error 400
+- **Seguridad:** El `userId` SIEMPRE se obtiene del contexto de seguridad (JWT). No se acepta en el body.
+- **Unicidad:** Solo un `DailyEntry` por usuario por fecha.
+- **Temporalidad:** Solo se pueden crear/modificar entradas de los últimos 7 días (ajustable).
+- **Integridad:** Un log solo puede registrarse si el `habitId` pertenece al usuario y su `type` coincide con el endpoint.
+- **Límites:** 
+    - Horas de estudio/sueño: 0.1 a 12.
+    - Horas de ejercicio/siesta: 0.1 a 4.
+    - Nivel de energía: 1 a 100.
 
 ## 5 - Technical Guidelines
-- Respeta los lineamientos del proyecto: Clean Architecture | SOLID
-- No se debe exponer datos críticos del user en el endpoint
-- La capa dominio|application está excluida de dependencias y frameworks externos
-- Todos los endpoints requieren autenticación JWT
-- Formato de respuesta: ApiResponse<T> según conventions.md
+- **Arquitectura:** Hexagonal / Clean. DTOs en `application.dto`.
+- **Persistencia:** Los logs se guardan en sus tablas específicas referenciando al `DailyEntry` y al `Habit`.
+- **Mapeo:** Usar mappers en la capa de aplicación para convertir de Entidad a DTO de respuesta.
 
-## 6 - Acceptance Criteria
-- Escenario 1: Entrega Exitosa
-  - Dado que el usuario completó todos los campos requeridos, el sistema devuelve estado 200 OK con el dailyLog registrado
-- Escenario 2: Falta de datos
-  - Dado que el usuario no completó algún campo requerido, el sistema devuelve error 400 BAD REQUEST
-- Escenario 3: Caracteres inválidos
-  - Dado que el usuario usó caracteres fuera de ASCII, el sistema devuelve error 400 BAD REQUEST
+## 6 - Use Cases
+*(Mantenemos los definidos anteriormente, ya que coinciden con este enfoque atómico)*
+- **UC-01:** Crear definición de hábito
+- **UC-02:** Listar habitos activos del user
+- **UC-03:** Desactivar habito
+- **UC-04:** Crear entrada base (DailyEntry).
+- **UC-05:** Registrar un log específico (Valida pertenencia y tipo).
+- **UC-06:** Recuperar la "foto" completa del día.
+- **UC-07:** Obtener entradas de la semana (insumo para feature #5)

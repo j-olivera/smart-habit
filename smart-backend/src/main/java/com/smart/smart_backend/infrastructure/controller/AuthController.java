@@ -1,15 +1,15 @@
 package com.smart.smart_backend.infrastructure.controller;
 
-import com.smart.smart_backend.application.dto.RegisterRequestDto;
-import com.smart.smart_backend.application.dto.UserResponseDto;
+import com.smart.smart_backend.application.dto.user.RegisterRequestDto;
+import com.smart.smart_backend.application.dto.user.UserResponseDto;
 import com.smart.smart_backend.application.dto.auth.AuthResultDto;
 import com.smart.smart_backend.application.dto.auth.LoginRequestDto;
 import com.smart.smart_backend.application.dto.auth.MessageResponseDto;
 import com.smart.smart_backend.application.dto.auth.TokenResponseDto;
-import com.smart.smart_backend.application.port.in.LoginUserUseCase;
-import com.smart.smart_backend.application.port.in.LogoutUserUseCase;
-import com.smart.smart_backend.application.port.in.RefreshSessionUseCase;
-import com.smart.smart_backend.application.port.in.RegisterUserUseCase;
+import com.smart.smart_backend.application.port.in.user.LoginUserUseCase;
+import com.smart.smart_backend.application.port.in.user.LogoutUserUseCase;
+import com.smart.smart_backend.application.port.in.user.RefreshSessionUseCase;
+import com.smart.smart_backend.application.port.in.user.RegisterUserUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

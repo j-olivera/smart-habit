@@ -2,7 +2,7 @@ package com.smart.smart_backend.application.usecase;
 
 import com.smart.smart_backend.application.dto.auth.AuthResultDto;
 import com.smart.smart_backend.application.dto.auth.LoginRequestDto;
-import com.smart.smart_backend.application.port.in.LoginUserUseCase;
+import com.smart.smart_backend.application.port.in.user.LoginUserUseCase;
 import com.smart.smart_backend.application.port.out.JwtProviderPort;
 import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
 import com.smart.smart_backend.application.port.out.RefreshTokenRepositoryPort;

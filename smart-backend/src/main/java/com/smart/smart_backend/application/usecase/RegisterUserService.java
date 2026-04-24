@@ -1,9 +1,9 @@
 package com.smart.smart_backend.application.usecase;
 
-import com.smart.smart_backend.application.dto.RegisterRequestDto;
-import com.smart.smart_backend.application.dto.UserResponseDto;
-import com.smart.smart_backend.application.mapper.UserMapper;
-import com.smart.smart_backend.application.port.in.RegisterUserUseCase;
+import com.smart.smart_backend.application.dto.user.RegisterRequestDto;
+import com.smart.smart_backend.application.dto.user.UserResponseDto;
+import com.smart.smart_backend.application.mapper.user.UserMapper;
+import com.smart.smart_backend.application.port.in.user.RegisterUserUseCase;
 import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
 import com.smart.smart_backend.domain.model.user.User;

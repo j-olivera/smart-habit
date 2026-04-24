@@ -1,14 +1,14 @@
 package com.smart.smart_backend.infrastructure.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smart.smart_backend.application.dto.RegisterRequestDto;
-import com.smart.smart_backend.application.dto.UserResponseDto;
+import com.smart.smart_backend.application.dto.user.RegisterRequestDto;
+import com.smart.smart_backend.application.dto.user.UserResponseDto;
 import com.smart.smart_backend.application.dto.auth.AuthResultDto;
 import com.smart.smart_backend.application.dto.auth.LoginRequestDto;
-import com.smart.smart_backend.application.port.in.LoginUserUseCase;
-import com.smart.smart_backend.application.port.in.LogoutUserUseCase;
-import com.smart.smart_backend.application.port.in.RefreshSessionUseCase;
-import com.smart.smart_backend.application.port.in.RegisterUserUseCase;
+import com.smart.smart_backend.application.port.in.user.LoginUserUseCase;
+import com.smart.smart_backend.application.port.in.user.LogoutUserUseCase;
+import com.smart.smart_backend.application.port.in.user.RefreshSessionUseCase;
+import com.smart.smart_backend.application.port.in.user.RegisterUserUseCase;
 import com.smart.smart_backend.application.port.out.JwtProviderPort;
 import com.smart.smart_backend.application.port.out.UserRepositoryPort;
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;

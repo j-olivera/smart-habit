@@ -1,6 +1,6 @@
-package com.smart.smart_backend.application.mapper;
+package com.smart.smart_backend.application.mapper.user;
 
-import com.smart.smart_backend.application.dto.UserResponseDto;
+import com.smart.smart_backend.application.dto.user.UserResponseDto;
 import com.smart.smart_backend.domain.model.user.User;
 
 public class UserMapper {

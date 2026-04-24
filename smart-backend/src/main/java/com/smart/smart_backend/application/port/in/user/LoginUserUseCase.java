@@ -1,4 +1,4 @@
-package com.smart.smart_backend.application.port.in;
+package com.smart.smart_backend.application.port.in.user;
 
 import com.smart.smart_backend.application.dto.auth.AuthResultDto;
 import com.smart.smart_backend.application.dto.auth.LoginRequestDto;
