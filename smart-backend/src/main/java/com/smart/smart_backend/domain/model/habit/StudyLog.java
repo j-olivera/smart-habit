@@ -1,20 +1,16 @@
 package com.smart.smart_backend.domain.model.habit;
 
-import com.smart.smart_backend.domain.exception.InvalidHoursException;
-import lombok.Builder;
-import lombok.Data;
-
-
 public class StudyLog {
     private final Long id;
     private final Long habitId;
     private final Long entryId;
     private final boolean studied;
-    private final Integer hours;
+    private final Float hours;
     private final String subject;
     private final String skipReason; // nulo si studied is false
 
-    public StudyLog(Long id, Long habitId, Long entryId, boolean studied, Integer hours, String subject, String skipReason) {
+    public StudyLog(Long id, Long habitId, Long entryId, boolean studied, Float hours, String subject,
+            String skipReason) {
         this.id = id;
         this.habitId = habitId;
         this.entryId = entryId;
@@ -25,12 +21,12 @@ public class StudyLog {
     }
 
     public static StudyLog create(Long habitId, Long entryId,
-                                  boolean studied, Integer hours,
-                                  String subject, String skipReason) {
+            boolean studied, Float hours,
+            String subject, String skipReason) {
         if (studied) {
-            if (hours == null || hours < 0 || hours > 24)
+            if (hours == null || hours < 0.1 || hours > 12)
                 throw new IllegalArgumentException(
-                        "Si estudió, hours debe estar entre 0 y 24");
+                        "Si estudió, hours debe estar entre 0 y 12");
             if (subject == null || subject.isBlank())
                 throw new IllegalArgumentException(
                         "Si estudió, subject es obligatorio");
@@ -59,7 +55,7 @@ public class StudyLog {
         return studied;
     }
 
-    public Integer getHours() {
+    public Float getHours() {
         return hours;
     }
 
