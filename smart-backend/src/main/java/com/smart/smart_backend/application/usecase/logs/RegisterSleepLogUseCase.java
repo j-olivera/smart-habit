@@ -41,18 +41,22 @@ public class RegisterSleepLogUseCase implements RegisterSleepLog {
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        if (sleepLogRepositoryPort.existByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())) {
-            throw new DuplicateHabitLogException(requestDto.habitId(), requestDto.entryId());
-        }
-
-        SleepLog sleepLog = SleepLog.create(
-                requestDto.habitId(),
-                requestDto.entryId(),
-                requestDto.hours(),
-                requestDto.quality(),
-                requestDto.napped(),
-                requestDto.napHours(),
-                requestDto.napNeeded());
+        SleepLog sleepLog = sleepLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+                .map(existing -> existing.update(
+                        requestDto.hours(),
+                        requestDto.quality(),
+                        requestDto.napped(),
+                        requestDto.napHours(),
+                        requestDto.napNeeded()
+                ))
+                .orElseGet(() -> SleepLog.create(
+                        requestDto.habitId(),
+                        requestDto.entryId(),
+                        requestDto.hours(),
+                        requestDto.quality(),
+                        requestDto.napped(),
+                        requestDto.napHours(),
+                        requestDto.napNeeded()));
 
         SleepLog savedLog = sleepLogRepositoryPort.save(sleepLog);
         return SleepLogMapper.toResponse(savedLog);

@@ -69,4 +69,24 @@ public class SleepLog {
     public boolean isNapNeeded() {
         return napNeeded;
     }
+
+    public SleepLog update(Float hs, SleepQuality quality, boolean napped, Float napHours, boolean napNeeded) {
+        SleepLog updated = SleepLog.create(
+                this.habitId,
+                this.entryId,
+                hs,
+                quality,
+                napped,
+                napHours,
+                napNeeded);
+        return new SleepLog(
+                this.id,
+                this.habitId,
+                this.entryId,
+                updated.hours,
+                updated.quality,
+                updated.napped,
+                updated.napHours,
+                updated.napNeeded);
+    }
 }

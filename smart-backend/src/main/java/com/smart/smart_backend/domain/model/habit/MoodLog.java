@@ -67,4 +67,24 @@ public class MoodLog {
     public String getSocialWith() {
         return socialWith;
     }
+
+    public MoodLog update(MoodLevel mood, boolean hasObs, String eventDesc, boolean socialized, String socialWith) {
+        MoodLog updated = MoodLog.create(
+                this.habitId,
+                this.entryId,
+                mood,
+                hasObs,
+                eventDesc,
+                socialized,
+                socialWith);
+        return new MoodLog(
+                this.id,
+                this.habitId,
+                this.entryId,
+                updated.mood,
+                updated.hasObservations,
+                updated.eventDescription,
+                updated.socialized,
+                updated.socialWith);
+    }
 }

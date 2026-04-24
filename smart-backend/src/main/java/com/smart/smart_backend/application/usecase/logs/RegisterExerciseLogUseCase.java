@@ -41,18 +41,22 @@ public class RegisterExerciseLogUseCase implements RegisterExerciseLog {
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        if (exerciseLogRepositoryPort.existByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())) {
-            throw new DuplicateHabitLogException(requestDto.habitId(), requestDto.entryId());
-        }
-
-        ExerciseLog exerciseLog = ExerciseLog.create(
-                requestDto.habitId(),
-                requestDto.entryId(),
-                requestDto.exercised(),
-                requestDto.hours(),
-                requestDto.muscularGroup(),
-                requestDto.energyLevel(),
-                requestDto.skipReason());
+        ExerciseLog exerciseLog = exerciseLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+                .map(existing -> existing.update(
+                        requestDto.exercised(),
+                        requestDto.hours(),
+                        requestDto.muscularGroup(),
+                        requestDto.energyLevel(),
+                        requestDto.skipReason()
+                ))
+                .orElseGet(() -> ExerciseLog.create(
+                        requestDto.habitId(),
+                        requestDto.entryId(),
+                        requestDto.exercised(),
+                        requestDto.hours(),
+                        requestDto.muscularGroup(),
+                        requestDto.energyLevel(),
+                        requestDto.skipReason()));
 
         ExerciseLog savedLog = exerciseLogRepositoryPort.save(exerciseLog);
         return ExerciseLogMapper.toResponse(savedLog);

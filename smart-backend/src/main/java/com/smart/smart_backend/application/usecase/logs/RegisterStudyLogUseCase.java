@@ -41,20 +41,21 @@ public class RegisterStudyLogUseCase implements RegisterStudyLog {
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        if(studyLogRepositoryPort.existByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())){
-            throw new DuplicateHabitLogException(requestDto.habitId(), requestDto.entryId());
-        }
 
-        StudyLog studyLog = StudyLog.create(
-                requestDto.habitId(),
-                requestDto.entryId(),
-                requestDto.studied(),
-                requestDto.hours(),
-                requestDto.subject(),
-                requestDto.skipReason()
-        );
 
-        StudyLog save = studyLogRepositoryPort.save(studyLog);
+        StudyLog log = studyLogRepositoryPort.findByHabitIdAndEntryId(
+                requestDto.habitId(), requestDto.entryId())
+                .map(existing -> existing.update(
+                        requestDto.studied(),requestDto.hours(),
+                        requestDto.subject(),requestDto.skipReason()
+                ))
+                .orElseGet(() -> StudyLog.create(
+                        requestDto.habitId(), requestDto.entryId(),
+                        requestDto.studied(), requestDto.hours(),
+                        requestDto.subject(), requestDto.skipReason()
+                ));
+
+        StudyLog save = studyLogRepositoryPort.save(log);
         return StudyLogMapper.toResponse(save);
     }
 

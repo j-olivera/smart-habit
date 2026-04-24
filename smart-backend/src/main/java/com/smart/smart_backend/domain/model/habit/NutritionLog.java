@@ -51,4 +51,20 @@ public class NutritionLog {
     public boolean isMetGoal() {
         return metGoal;
     }
+
+    public NutritionLog update(NutritionRating rating, boolean hasObs, boolean metGoal) {
+        NutritionLog updated = NutritionLog.create(
+                this.habitId,
+                this.entryId,
+                rating,
+                hasObs,
+                metGoal);
+        return new NutritionLog(
+                this.id,
+                this.habitId,
+                this.entryId,
+                updated.rating,
+                updated.hasObservation,
+                updated.metGoal);
+    }
 }

@@ -82,6 +82,21 @@ El flujo consiste en:
 }
 ```
 
+## Manejo de errores
+
+| Excepción | HTTP | Cuándo |
+|---|---|---|
+| `DuplicateEntryException` | 409 Conflict | Ya existe DailyEntry para ese user+date |
+| `HabitNotFoundException` | 404 Not Found | Habit no existe o no pertenece al user |
+| `EntryNotFoundException` | 404 Not Found | DailyEntry no existe o no pertenece al user |
+| `HabitTypeMismatchException` | 422 Unprocessable | habit.type no coincide con el endpoint |
+| `InvalidDateRangeException` | 400 Bad Request | Fecha futura o mayor a 7 días atrás |
+| `IllegalArgumentException` | 400 Bad Request | Reglas internas del dominio (horas, campos) |
+| `MethodArgumentNotValidException` | 400 Bad Request | Validaciones @Valid del request |
+ 
+---
+
+
 ## 4 - Business Restrictions (Backend)
 - **Seguridad:** El `userId` SIEMPRE se obtiene del contexto de seguridad (JWT). No se acepta en el body.
 - **Unicidad:** Solo un `DailyEntry` por usuario por fecha.
@@ -103,6 +118,6 @@ El flujo consiste en:
 - **UC-02:** Listar habitos activos del user
 - **UC-03:** Desactivar habito
 - **UC-04:** Crear entrada base (DailyEntry).
-- **UC-05:** Registrar un log específico (Valida pertenencia y tipo).
+- **UC-05:** Registrar un log específico (Valida pertenencia y tipo)(Se puede actualizar).
 - **UC-06:** Recuperar la "foto" completa del día.
 - **UC-07:** Obtener entradas de la semana (insumo para feature #5)

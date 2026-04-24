@@ -41,16 +41,18 @@ public class RegisterNutritionLogUseCase implements RegisterNutritionLog {
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        if (nutritionLogRepositoryPort.existByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())) {
-            throw new DuplicateHabitLogException(requestDto.habitId(), requestDto.entryId());
-        }
-
-        NutritionLog nutritionLog = NutritionLog.create(
-                requestDto.habitId(),
-                requestDto.entryId(),
-                requestDto.rating(),
-                requestDto.hasObservation(),
-                requestDto.metGoal());
+        NutritionLog nutritionLog = nutritionLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+                .map(existing -> existing.update(
+                        requestDto.rating(),
+                        requestDto.hasObservation(),
+                        requestDto.metGoal()
+                ))
+                .orElseGet(() -> NutritionLog.create(
+                        requestDto.habitId(),
+                        requestDto.entryId(),
+                        requestDto.rating(),
+                        requestDto.hasObservation(),
+                        requestDto.metGoal()));
 
         NutritionLog savedLog = nutritionLogRepositoryPort.save(nutritionLog);
         return NutritionLogMapper.toResponse(savedLog);

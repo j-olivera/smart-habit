@@ -41,18 +41,22 @@ public class RegisterMoodLogUseCase implements RegisterMoodLog {
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        if (moodLogRepositoryPort.existByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())) {
-            throw new DuplicateHabitLogException(requestDto.habitId(), requestDto.entryId());
-        }
-
-        MoodLog moodLog = MoodLog.create(
-                requestDto.habitId(),
-                requestDto.entryId(),
-                requestDto.mood(),
-                requestDto.hasObservations(),
-                requestDto.eventDescription(),
-                requestDto.socialized(),
-                requestDto.socialWith());
+        MoodLog moodLog = moodLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+                .map(existing -> existing.update(
+                        requestDto.mood(),
+                        requestDto.hasObservations(),
+                        requestDto.eventDescription(),
+                        requestDto.socialized(),
+                        requestDto.socialWith()
+                ))
+                .orElseGet(() -> MoodLog.create(
+                        requestDto.habitId(),
+                        requestDto.entryId(),
+                        requestDto.mood(),
+                        requestDto.hasObservations(),
+                        requestDto.eventDescription(),
+                        requestDto.socialized(),
+                        requestDto.socialWith()));
 
         MoodLog savedLog = moodLogRepositoryPort.save(moodLog);
         return MoodLogMapper.toResponse(savedLog);

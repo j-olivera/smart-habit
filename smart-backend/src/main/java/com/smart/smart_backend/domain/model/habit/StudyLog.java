@@ -66,6 +66,27 @@ public class StudyLog {
     public String getSkipReason() {
         return skipReason;
     }
+
+    //cambio
+    public StudyLog update(boolean stud, Float hs, String subj, String skipReason){
+        StudyLog updated = StudyLog.create(
+                this.habitId,
+                this.entryId,
+                stud,
+                hs,
+                subj,
+                skipReason
+        );
+        return new StudyLog(
+                this.id,              // conserva el id actual
+                this.habitId,
+                this.entryId,
+                updated.studied,
+                updated.hours,
+                updated.subject,
+                updated.skipReason
+        );
+    }
 }
 
 /*

@@ -71,4 +71,24 @@ public class ExerciseLog {
     public String getSkipReason() {
         return skipReason;
     }
+
+    public ExerciseLog update(boolean exerc, Float hs, MuscularGroup mg, Integer energy, String skipReason) {
+        ExerciseLog updated = ExerciseLog.create(
+                this.habitId,
+                this.entryId,
+                exerc,
+                hs,
+                mg,
+                energy,
+                skipReason);
+        return new ExerciseLog(
+                this.id,
+                this.habitId,
+                this.entryId,
+                updated.exercised,
+                updated.hours,
+                updated.muscularGroup,
+                updated.energyLevel,
+                updated.skipReason);
+    }
 }
