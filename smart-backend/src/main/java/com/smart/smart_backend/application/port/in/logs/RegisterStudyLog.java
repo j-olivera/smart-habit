@@ -4,5 +4,5 @@ import com.smart.smart_backend.application.dto.habit.log.StudyLogRequestDto;
 import com.smart.smart_backend.application.dto.habit.log.StudyLogResponseDto;
 
 public interface RegisterStudyLog {
-    StudyLogResponseDto execute(StudyLogRequestDto requestDto);
+    StudyLogResponseDto execute(Long userId, StudyLogRequestDto requestDto);
 }

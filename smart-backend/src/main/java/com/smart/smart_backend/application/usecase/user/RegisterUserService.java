@@ -1,11 +1,11 @@
-package com.smart.smart_backend.application.usecase;
+package com.smart.smart_backend.application.usecase.user;
 
 import com.smart.smart_backend.application.dto.user.RegisterRequestDto;
 import com.smart.smart_backend.application.dto.user.UserResponseDto;
 import com.smart.smart_backend.application.mapper.user.UserMapper;
 import com.smart.smart_backend.application.port.in.user.RegisterUserUseCase;
-import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
-import com.smart.smart_backend.application.port.out.UserRepositoryPort;
+import com.smart.smart_backend.application.port.out.user.PasswordEncoderPort;
+import com.smart.smart_backend.application.port.out.user.UserRepositoryPort;
 import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;
 import lombok.RequiredArgsConstructor;

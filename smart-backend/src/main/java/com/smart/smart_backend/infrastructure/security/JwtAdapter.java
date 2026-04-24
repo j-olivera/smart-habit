@@ -1,6 +1,6 @@
 package com.smart.smart_backend.infrastructure.security;
 
-import com.smart.smart_backend.application.port.out.JwtProviderPort;
+import com.smart.smart_backend.application.port.out.user.JwtProviderPort;
 import com.smart.smart_backend.domain.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

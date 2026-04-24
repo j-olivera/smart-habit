@@ -1,7 +1,7 @@
 package com.smart.smart_backend.infrastructure.security;
 
-import com.smart.smart_backend.application.port.out.JwtProviderPort;
-import com.smart.smart_backend.application.port.out.UserRepositoryPort;
+import com.smart.smart_backend.application.port.out.user.JwtProviderPort;
+import com.smart.smart_backend.application.port.out.user.UserRepositoryPort;
 import com.smart.smart_backend.domain.model.user.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

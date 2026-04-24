@@ -13,4 +13,15 @@ public class StudyLogMapper {
                 dto.subject(),
                 dto.skipReason());
     }
+
+    public static StudyLogResponseDto toResponse(StudyLog studyLog) {
+        return new StudyLogResponseDto(
+                studyLog.getId(),
+                studyLog.getHabitId(),
+                studyLog.getEntryId(),
+                studyLog.isStudied(),
+                studyLog.getHours(),
+                studyLog.getSubject(),
+                studyLog.getSkipReason());
+    }
 }

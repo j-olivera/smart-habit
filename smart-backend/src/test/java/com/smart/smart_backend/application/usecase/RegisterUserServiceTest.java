@@ -2,8 +2,9 @@ package com.smart.smart_backend.application.usecase;
 
 import com.smart.smart_backend.application.dto.user.RegisterRequestDto;
 import com.smart.smart_backend.application.dto.user.UserResponseDto;
-import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
-import com.smart.smart_backend.application.port.out.UserRepositoryPort;
+import com.smart.smart_backend.application.port.out.user.PasswordEncoderPort;
+import com.smart.smart_backend.application.port.out.user.UserRepositoryPort;
+import com.smart.smart_backend.application.usecase.user.RegisterUserService;
 import com.smart.smart_backend.domain.model.user.User;
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;

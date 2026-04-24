@@ -1,4 +1,4 @@
-package com.smart.smart_backend.application.port.out;
+package com.smart.smart_backend.application.port.out.user;
 
 public interface PasswordEncoderPort {
     String encode(String rawPassword);

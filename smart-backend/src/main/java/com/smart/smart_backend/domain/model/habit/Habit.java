@@ -9,10 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Habit {
     private Long id;
     private Long userId; //FK
@@ -22,9 +18,52 @@ public class Habit {
     private boolean active;
     private Instant createdAt;
 
-    public void validate(String name, String description){
+    public Habit(Long id, Long userId, String name, HabitType type, String description, boolean active, Instant createdAt) {
+        this.id = id;
+        this.userId = userId;
+        this.name = name;
+        this.type = type;
+        this.description = description;
+        this.active = active;
+        this.createdAt = createdAt;
+    }
+
+    public static Habit create( Long userId, String name, HabitType type, String description, boolean active){
+        validate(name, description);
+        return new Habit(null, userId,name,type,description,active, Instant.now());
+    }
+
+    public static void validate(String name, String description){
         if(name == null || name.isEmpty() || description.isEmpty()){
             throw new GlobalException("Something is wrong..");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public HabitType getType() {
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

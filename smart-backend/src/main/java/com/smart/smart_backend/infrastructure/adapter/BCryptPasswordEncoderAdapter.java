@@ -1,6 +1,6 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
-import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
+import com.smart.smart_backend.application.port.out.user.PasswordEncoderPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

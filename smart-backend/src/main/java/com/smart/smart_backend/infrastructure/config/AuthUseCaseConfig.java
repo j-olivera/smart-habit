@@ -1,12 +1,12 @@
 package com.smart.smart_backend.infrastructure.config;
 
-import com.smart.smart_backend.application.port.out.JwtProviderPort;
-import com.smart.smart_backend.application.port.out.PasswordEncoderPort;
-import com.smart.smart_backend.application.port.out.RefreshTokenRepositoryPort;
-import com.smart.smart_backend.application.port.out.UserRepositoryPort;
-import com.smart.smart_backend.application.usecase.LoginUserService;
-import com.smart.smart_backend.application.usecase.LogoutUserService;
-import com.smart.smart_backend.application.usecase.RefreshSessionService;
+import com.smart.smart_backend.application.port.out.user.JwtProviderPort;
+import com.smart.smart_backend.application.port.out.user.PasswordEncoderPort;
+import com.smart.smart_backend.application.port.out.user.RefreshTokenRepositoryPort;
+import com.smart.smart_backend.application.port.out.user.UserRepositoryPort;
+import com.smart.smart_backend.application.usecase.user.LoginUserService;
+import com.smart.smart_backend.application.usecase.user.LogoutUserService;
+import com.smart.smart_backend.application.usecase.user.RefreshSessionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
