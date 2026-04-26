@@ -1,8 +1,9 @@
 package com.smart.smart_backend.infrastructure.exception;
 
 import com.smart.smart_backend.domain.exception.EmailAlreadyExistsException;
+import com.smart.smart_backend.domain.exception.InsufficientDataException;
 import com.smart.smart_backend.domain.exception.InvalidCredentialsException;
-
+import com.smart.smart_backend.domain.exception.ReportGenerationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -35,6 +36,26 @@ public class GlobalExceptionHandler {
         error.put("error", "Unauthorized");
         error.put("message", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InsufficientDataException.class)
+    public ResponseEntity<Map<String, Object>> handleInsufficientDataException(InsufficientDataException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", HttpStatus.UNPROCESSABLE_ENTITY.value());
+        error.put("error", "Unprocessable Entity");
+        error.put("message", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @ExceptionHandler(ReportGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleReportGenerationException(ReportGenerationException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("timestamp", LocalDateTime.now());
+        error.put("status", HttpStatus.SERVICE_UNAVAILABLE.value());
+        error.put("error", "Service Unavailable");
+        error.put("message", "El servicio de IA no está disponible temporalmente. Intenta más tarde.");
+        return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

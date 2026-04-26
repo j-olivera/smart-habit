@@ -53,3 +53,8 @@ logging:
     root: INFO
     com.smart: DEBUG
     org.hibernate.SQL: DEBUG
+
+spring.ai.ollama.base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+spring.ai.ollama.chat.options.model: phi3
+spring.ai.ollama.chat.options.temperature: 0.3
+spring.ai.ollama.chat.options.num-predict: 800
