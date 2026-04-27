@@ -1,9 +1,14 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
 import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
+import com.smart.smart_backend.domain.enums.MuscularGroup;
 import com.smart.smart_backend.infrastructure.mapper.DailyEntryEntityMapper;
 import com.smart.smart_backend.infrastructure.mapper.LogEntityMapper;
 import com.smart.smart_backend.infrastructure.model.DailyEntryEntity;
+import com.smart.smart_backend.infrastructure.model.ExerciseLogEntity;
+import com.smart.smart_backend.infrastructure.model.MoodLogEntity;
+import com.smart.smart_backend.infrastructure.model.NutritionLogEntity;
+import com.smart.smart_backend.infrastructure.model.SleepLogEntity;
 import com.smart.smart_backend.infrastructure.model.StudyLogEntity;
 import com.smart.smart_backend.infrastructure.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,5 +97,117 @@ class DailyEntryRepositoryAdapterTest {
         assertThat(first.id()).isEqualTo(100L);
         assertThat(first.studyLogs()).hasSize(1);
         assertThat(first.studyLogs().get(0).subject()).isEqualTo("Java");
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoEntriesInRange() {
+        // Arrange
+        Long userId = 1L;
+        LocalDate start = LocalDate.of(2026, 4, 20);
+        LocalDate end = LocalDate.of(2026, 4, 26);
+
+        when(jpaDailyEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(userId, start, end))
+                .thenReturn(List.of());
+
+        // Act
+        List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
+
+        // Assert
+        assertThat(results).isEmpty();
+    }
+
+    @Test
+    void shouldFindByUserIdAndDateWithLogs() {
+        // Arrange
+        Long userId = 1L;
+        LocalDate date = LocalDate.of(2026, 4, 21);
+
+        DailyEntryEntity entryEntity = DailyEntryEntity.builder()
+                .id(100L)
+                .userId(userId)
+                .date(date)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        StudyLogEntity studyLog = StudyLogEntity.builder()
+                .id(1L)
+                .entryId(100L)
+                .habitId(1L)
+                .studied(true)
+                .hours(2.0f)
+                .subject("Java")
+                .build();
+
+        when(jpaDailyEntryRepository.findByUserIdAndDate(userId, date))
+                .thenReturn(Optional.of(entryEntity));
+        when(jpaStudyLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of(studyLog));
+        when(jpaExerciseLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+
+        // Act
+        Optional<DailyEntryWithLogsResult> result = adapter.findByUserIdAndDateWithLogs(userId, date);
+
+        // Assert
+        assertThat(result).isPresent();
+        assertThat(result.get().id()).isEqualTo(100L);
+        assertThat(result.get().studyLogs()).hasSize(1);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenNoEntryForDate() {
+        // Arrange
+        Long userId = 1L;
+        LocalDate date = LocalDate.of(2026, 4, 21);
+
+        when(jpaDailyEntryRepository.findByUserIdAndDate(userId, date))
+                .thenReturn(Optional.empty());
+
+        // Act
+        Optional<DailyEntryWithLogsResult> result = adapter.findByUserIdAndDateWithLogs(userId, date);
+
+        // Assert
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void shouldHandleMultipleEntriesWithMultipleLogs() {
+        // Arrange
+        Long userId = 1L;
+        LocalDate start = LocalDate.of(2026, 4, 20);
+        LocalDate end = LocalDate.of(2026, 4, 26);
+
+        List<DailyEntryEntity> entries = List.of(
+                DailyEntryEntity.builder().id(1L).userId(userId).date(start).createdAt(LocalDateTime.now()).build(),
+                DailyEntryEntity.builder().id(2L).userId(userId).date(start.plusDays(1)).createdAt(LocalDateTime.now()).build()
+        );
+
+        List<StudyLogEntity> studyLogs = List.of(
+                StudyLogEntity.builder().id(1L).entryId(1L).habitId(1L).studied(true).hours(2.0f).subject("Java").build(),
+                StudyLogEntity.builder().id(2L).entryId(2L).habitId(1L).studied(true).hours(3.0f).subject("Python").build()
+        );
+
+        List<ExerciseLogEntity> exerciseLogs = List.of(
+                ExerciseLogEntity.builder().id(1L).entryId(1L).habitId(2L).exercised(true).hours(1.0f).muscleGroups("CHEST").build(),
+                ExerciseLogEntity.builder().id(2L).entryId(2L).habitId(2L).exercised(true).hours(1.5f).muscleGroups("LEGS").build()
+        );
+
+        when(jpaDailyEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(userId, start, end))
+                .thenReturn(entries);
+        when(jpaStudyLogRepository.findAllByEntryIdIn(anyList())).thenReturn(studyLogs);
+        when(jpaExerciseLogRepository.findAllByEntryIdIn(anyList())).thenReturn(exerciseLogs);
+        when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+
+        // Act
+        List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
+
+        // Assert
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0).studyLogs()).hasSize(1);
+        assertThat(results.get(0).exerciseLogs()).hasSize(1);
+        assertThat(results.get(1).studyLogs()).hasSize(1);
     }
 }

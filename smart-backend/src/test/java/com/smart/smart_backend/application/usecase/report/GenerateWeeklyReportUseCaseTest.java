@@ -226,4 +226,135 @@ class GenerateWeeklyReportUseCaseTest {
         assertEquals(1L, result.id());
         verify(reportRepo).save(any(WeeklyReport.class));
     }
+
+    @Test
+    void shouldThrowExceptionWhenAiAssistantFails() {
+        // Given
+        Long userId = 1L;
+        LocalDate weekStart = LocalDate.of(2026, 4, 20);
+        GenerateWeeklyReportCommand command = new GenerateWeeklyReportCommand(userId, weekStart, "USER");
+
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .build()
+        );
+
+        WeeklyEntriesReportDto weeklyReport = WeeklyEntriesReportDto.builder()
+                .userId(userId).weekStart(weekStart).weekEnd(weekStart.plusDays(6))
+                .dailyEntries(entries).build();
+
+        when(getWeeklyEntriesUseCase.execute(eq(userId), any(LocalDate.class))).thenReturn(weeklyReport);
+        when(promptBuilder.build(any(), any(), any())).thenReturn("prompt test");
+        when(aiAssistant.generateWeeklyInsight(any())).thenThrow(new RuntimeException("AI service unavailable"));
+
+        // When/Then
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> useCase.execute(command)
+        );
+
+        assertEquals("AI service unavailable", exception.getMessage());
+        verify(reportRepo, never()).save(any());
+    }
+
+    @Test
+    void shouldPassWithExactly3Days() {
+        // Given - mínimo exacto
+        Long userId = 1L;
+        LocalDate weekStart = LocalDate.of(2026, 4, 20);
+        GenerateWeeklyReportCommand command = new GenerateWeeklyReportCommand(userId, weekStart, "USER");
+
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .build()
+        );
+
+        WeeklyEntriesReportDto weeklyReport = WeeklyEntriesReportDto.builder()
+                .userId(userId).weekStart(weekStart).weekEnd(weekStart.plusDays(6))
+                .dailyEntries(entries).build();
+
+        when(getWeeklyEntriesUseCase.execute(eq(userId), any(LocalDate.class))).thenReturn(weeklyReport);
+        when(promptBuilder.build(any(), any(), any())).thenReturn("prompt test");
+        when(aiAssistant.generateWeeklyInsight(any())).thenReturn("## RESUMEN\n3 días exactos");
+        when(reportRepo.findByUserIdAndWeekStart(userId, weekStart)).thenReturn(java.util.Optional.empty());
+        when(reportRepo.save(any(WeeklyReport.class))).thenAnswer(inv -> {
+            WeeklyReport report = inv.getArgument(0);
+            report.setId(2L);
+            return report;
+        });
+
+        // When
+        WeeklyReportResult result = useCase.execute(command);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(2L, result.id());
+        verify(aiAssistant).generateWeeklyInsight(any()); // Ahora sí debe llamarse
+    }
+
+    @Test
+    void shouldNormalizeWeekStartToMonday() {
+        // Given - semana empieza en jueves, debe normalizarse a lunes
+        Long userId = 1L;
+        LocalDate weekStart = LocalDate.of(2026, 4, 23); // Jueves
+        GenerateWeeklyReportCommand command = new GenerateWeeklyReportCommand(userId, weekStart, "USER");
+
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .build(),
+                DailyEntryWithLogsResult.builder()
+                        .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .build()
+        );
+
+        WeeklyEntriesReportDto weeklyReport = WeeklyEntriesReportDto.builder()
+                .userId(userId).weekStart(weekStart).weekEnd(weekStart.plusDays(6))
+                .dailyEntries(entries).build();
+
+        when(getWeeklyEntriesUseCase.execute(eq(userId), any(LocalDate.class))).thenReturn(weeklyReport);
+        when(promptBuilder.build(any(), any(), any())).thenReturn("prompt test");
+        when(aiAssistant.generateWeeklyInsight(any())).thenReturn("report");
+        when(reportRepo.findByUserIdAndWeekStart(eq(userId), eq(LocalDate.of(2026, 4, 20)))).thenReturn(java.util.Optional.empty());
+        when(reportRepo.save(any(WeeklyReport.class))).thenAnswer(inv -> {
+            WeeklyReport report = inv.getArgument(0);
+            report.setId(3L);
+            return report;
+        });
+
+        // When
+        WeeklyReportResult result = useCase.execute(command);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(LocalDate.of(2026, 4, 20), result.weekStart()); // Debe ser lunes
+        assertEquals(LocalDate.of(2026, 4, 26), result.weekEnd()); // Debe ser domingo
+        verify(reportRepo).findByUserIdAndWeekStart(eq(userId), eq(LocalDate.of(2026, 4, 20)));
+    }
 }

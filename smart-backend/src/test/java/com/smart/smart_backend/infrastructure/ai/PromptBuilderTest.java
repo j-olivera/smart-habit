@@ -177,4 +177,122 @@ class PromptBuilderTest {
         // Then
         assertTrue(prompt.contains("Sueño: 6.0hs (REGULAR) + siesta 1.0hs"));
     }
+
+    @Test
+    void shouldHandleNullStudyLogs() {
+        // Given - null logs means no output for that category
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(null)
+                        .exerciseLogs(List.of())
+                        .nutritionLogs(List.of())
+                        .moodLogs(List.of())
+                        .sleepLogs(List.of())
+                        .build()
+        );
+
+        LocalDate weekStart = LocalDate.of(2026, 4, 20);
+        LocalDate weekEnd = LocalDate.of(2026, 4, 26);
+
+        // When
+        String prompt = promptBuilder.build(entries, weekStart, weekEnd);
+
+        // Then
+        assertNotNull(prompt);
+        assertTrue(prompt.contains("--- 2026-04-21 ---"));
+        assertFalse(prompt.contains("Estudio:")); // No output when null
+    }
+
+    @Test
+    void shouldHandleNullExerciseLogs() {
+        // Given
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(List.of())
+                        .exerciseLogs(null)
+                        .nutritionLogs(List.of())
+                        .moodLogs(List.of())
+                        .sleepLogs(List.of())
+                        .build()
+        );
+
+        LocalDate weekStart = LocalDate.of(2026, 4, 20);
+        LocalDate weekEnd = LocalDate.of(2026, 4, 26);
+
+        // When
+        String prompt = promptBuilder.build(entries, weekStart, weekEnd);
+
+        // Then
+        assertNotNull(prompt);
+        assertTrue(prompt.contains("--- 2026-04-21 ---"));
+        assertFalse(prompt.contains("Ejercicio:")); // No output when null
+    }
+
+    @Test
+    void shouldHandleMultipleLogsPerCategory() {
+        // Given - múltiples ejercicios en un día
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .date(LocalDate.of(2026, 4, 21))
+                        .exerciseLogs(List.of(
+                                ExerciseLogResponseDto.builder()
+                                        .id(1L)
+                                        .exercised(true)
+                                        .hours(1.0f)
+                                        .muscularGroup(MuscularGroup.CHEST)
+                                        .energyLevel(80)
+                                        .build(),
+                                ExerciseLogResponseDto.builder()
+                                        .id(2L)
+                                        .exercised(true)
+                                        .hours(0.5f)
+                                        .muscularGroup(MuscularGroup.LEGS)
+                                        .energyLevel(60)
+                                        .build()
+                        ))
+                        .build()
+        );
+
+        LocalDate weekStart = LocalDate.of(2026, 4, 20);
+        LocalDate weekEnd = LocalDate.of(2026, 4, 26);
+
+        // When
+        String prompt = promptBuilder.build(entries, weekStart, weekEnd);
+
+        // Then
+        assertNotNull(prompt);
+        assertTrue(prompt.contains("CHEST"));
+        assertTrue(prompt.contains("LEGS"));
+    }
+
+    @Test
+    void shouldFormatWeekRangeCorrectly() {
+        // Given
+        List<DailyEntryWithLogsResult> entries = List.of(
+                DailyEntryWithLogsResult.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .date(LocalDate.of(2026, 4, 21))
+                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .build()
+        );
+
+        LocalDate weekStart = LocalDate.of(2026, 1, 5); // Enero, cambia de mes
+        LocalDate weekEnd = LocalDate.of(2026, 1, 11);
+
+        // When
+        String prompt = promptBuilder.build(entries, weekStart, weekEnd);
+
+        // Then
+        assertNotNull(prompt);
+        assertTrue(prompt.contains("Semana del 2026-01-05 al 2026-01-11"));
+    }
 }
