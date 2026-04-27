@@ -1,9 +1,9 @@
 package com.smart.smart_backend.infrastructure.repository;
 
 import com.smart.smart_backend.domain.model.token.RefreshToken;
-import com.smart.smart_backend.infrastructure.adapter.RefreshTokenRepositoryAdapter;
-import com.smart.smart_backend.infrastructure.mapper.RefreshTokenEntityMapperImpl;
-import com.smart.smart_backend.infrastructure.model.UserEntity;
+import com.smart.smart_backend.infrastructure.adapter.security.RefreshTokenRepositoryAdapter;
+import com.smart.smart_backend.infrastructure.mapper.token.RefreshTokenEntityMapperImpl;
+import com.smart.smart_backend.infrastructure.model.user.UserEntity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package com.smart.smart_backend.infrastructure.adapter.report;
 import com.smart.smart_backend.application.port.out.report.WeeklyReportRepositoryPort;
 import com.smart.smart_backend.domain.model.report.WeeklyReport;
 import com.smart.smart_backend.infrastructure.model.report.WeeklyReportJpaEntity;
-import com.smart.smart_backend.infrastructure.repository.JpaWeeklyReportRepository;
+import com.smart.smart_backend.infrastructure.repository.report.JpaWeeklyReportRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;

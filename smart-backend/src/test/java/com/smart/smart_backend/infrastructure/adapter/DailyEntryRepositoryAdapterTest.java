@@ -1,16 +1,13 @@
 package com.smart.smart_backend.infrastructure.adapter;
 
 import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
-import com.smart.smart_backend.domain.enums.MuscularGroup;
-import com.smart.smart_backend.infrastructure.mapper.DailyEntryEntityMapper;
-import com.smart.smart_backend.infrastructure.mapper.LogEntityMapper;
-import com.smart.smart_backend.infrastructure.model.DailyEntryEntity;
-import com.smart.smart_backend.infrastructure.model.ExerciseLogEntity;
-import com.smart.smart_backend.infrastructure.model.MoodLogEntity;
-import com.smart.smart_backend.infrastructure.model.NutritionLogEntity;
-import com.smart.smart_backend.infrastructure.model.SleepLogEntity;
-import com.smart.smart_backend.infrastructure.model.StudyLogEntity;
-import com.smart.smart_backend.infrastructure.repository.*;
+import com.smart.smart_backend.infrastructure.adapter.habit.DailyEntryRepositoryAdapter;
+import com.smart.smart_backend.infrastructure.mapper.habit.DailyEntryEntityMapper;
+import com.smart.smart_backend.infrastructure.mapper.habit.LogEntityMapper;
+import com.smart.smart_backend.infrastructure.model.habit.DailyEntryEntity;
+import com.smart.smart_backend.infrastructure.model.habit.ExerciseLogEntity;
+import com.smart.smart_backend.infrastructure.model.habit.StudyLogEntity;
+import com.smart.smart_backend.infrastructure.repository.habit.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

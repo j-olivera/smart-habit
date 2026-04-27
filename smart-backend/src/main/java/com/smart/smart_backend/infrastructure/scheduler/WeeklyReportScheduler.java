@@ -1,12 +1,10 @@
 package com.smart.smart_backend.infrastructure.scheduler;
 
-import com.smart.smart_backend.application.port.in.habit.GetWeeklyEntriesUseCase;
 import com.smart.smart_backend.application.port.in.report.GenerateWeeklyReportCommand;
 import com.smart.smart_backend.application.port.in.report.GenerateWeeklyReportPort;
-import com.smart.smart_backend.infrastructure.repository.JpaUserRepository;
+import com.smart.smart_backend.infrastructure.repository.user.JpaUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
