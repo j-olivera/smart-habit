@@ -81,6 +81,7 @@ export class LoginComponent {
   get passwordErrorMsg(): string {
     const c = this.loginForm.get('password')!;
     if (c.hasError('required')) return 'Password is required.';
+
     return '';
   }
 }
