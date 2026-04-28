@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { HomeData, HabitItem, AISuggestion } from '../../models/home/home.model';
 
 @Component({
@@ -12,6 +12,7 @@ import { HomeData, HabitItem, AISuggestion } from '../../models/home/home.model'
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
+  private readonly router = inject(Router);
   readonly data = signal<HomeData>({
     aiBadge: {
       icon: 'auto_awesome',
@@ -90,12 +91,16 @@ export class HomeComponent {
     },
   });
 
+  onLogoClick(): void {
+    this.router.navigate(['/home']);
+  }
+
   onLogin(): void {
-    console.log('Login clicked');
+    this.router.navigate(['/login']);
   }
 
   onSignup(): void {
-    console.log('Signup clicked');
+    this.router.navigate(['/register']);
   }
 
   onCtaClick(): void {
