@@ -9,7 +9,7 @@
 ## Sub-Agentes disponibles
 
 - [agente-backend](/docs/ia/agents/backend.md) -> endpoints REST, servicios java, reglas de negocio, spring security, entidades, repositorios, controladores, servicios.
-- [agente-frontend](/docs/ia/agents/frontend.modulos) -> componentes angular, servicios angular, rutas angular, formularios reactivos.
+- [agente-frontend](/docs/ia/agents/frontend.modulos) -> componentes angular, servicios angular, rutas angular, formularios reactivos. Revisar [skills](/docs/skills) para el para los diseños UX
 - [agente-db](/docs/ia/agents/database.md) -> schema SQL
 - [agente-qa](/docs/ia/agents/qa.md) -> test unitarios(Junit 5, Mockito), test de integracion(Spring Boot Test), Test E2E(Playwright), Test Angular(Vitest)
 
