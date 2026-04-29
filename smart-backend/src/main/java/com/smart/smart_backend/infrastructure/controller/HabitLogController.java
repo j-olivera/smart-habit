@@ -22,6 +22,7 @@ public class HabitLogController {
     private final RegisterMoodLog registerMoodLogUseCase;
     private final RegisterNutritionLog registerNutritionLogUseCase;
     private final RegisterSleepLog registerSleepLogUseCase;
+    private final RegisterPersonalLog registerPersonalLogUseCase;
 
     @PostMapping("/study")
     public ResponseEntity<StudyLogResponseDto> registerStudy(
@@ -56,5 +57,12 @@ public class HabitLogController {
             @AuthenticationPrincipal User user,
             @Valid @RequestBody SleepLogRequestDto requestDto) {
         return ResponseEntity.ok(registerSleepLogUseCase.execute(user.getId(), requestDto));
+    }
+
+    @PostMapping("/personal")
+    public ResponseEntity<PersonalLogResponseDto> registerPersonal(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody PersonalLogRequestDto requestDto) {
+        return ResponseEntity.ok(registerPersonalLogUseCase.execute(user.getId(), requestDto));
     }
 }

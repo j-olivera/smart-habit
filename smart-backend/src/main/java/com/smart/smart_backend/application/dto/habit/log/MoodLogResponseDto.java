@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record MoodLogResponseDto(
     Long id,
-    Long habitId,
+
     Long entryId,
     MoodLevel mood,
     boolean hasObservations,

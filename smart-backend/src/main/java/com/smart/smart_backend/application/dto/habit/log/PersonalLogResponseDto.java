@@ -3,11 +3,11 @@ package com.smart.smart_backend.application.dto.habit.log;
 import lombok.Builder;
 
 @Builder
-public record StudyLogResponseDto(
+public record PersonalLogResponseDto(
     Long id,
+    Long habitId,
     Long entryId,
-    boolean studied,
+    boolean completed,
     Float hours,
-    String subject,
-    String skipReason
+    String description
 ) {}

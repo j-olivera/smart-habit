@@ -7,7 +7,7 @@ public class NutritionLogMapper {
     public static NutritionLogResponseDto toResponse(NutritionLog nutritionLog) {
         return new NutritionLogResponseDto(
                 nutritionLog.getId(),
-                nutritionLog.getHabitId(),
+
                 nutritionLog.getEntryId(),
                 nutritionLog.getRating(),
                 nutritionLog.isHasObservation(),

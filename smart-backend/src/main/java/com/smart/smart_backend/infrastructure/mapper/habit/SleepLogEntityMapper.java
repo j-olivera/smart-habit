@@ -12,7 +12,7 @@ public class SleepLogEntityMapper {
         if (entity == null) return null;
         return new SleepLog(
                 entity.getId(),
-                entity.getHabitId(),
+
                 entity.getEntryId(),
                 entity.getHours(),
                 SleepQuality.valueOf(entity.getQuality()),
@@ -26,7 +26,7 @@ public class SleepLogEntityMapper {
         if (domain == null) return null;
         return SleepLogEntity.builder()
                 .id(domain.getId())
-                .habitId(domain.getHabitId())
+
                 .entryId(domain.getEntryId())
                 .hours(domain.getHours())
                 .quality(domain.getQuality().name())

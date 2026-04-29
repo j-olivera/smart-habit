@@ -4,7 +4,6 @@ import com.smart.smart_backend.domain.enums.MuscularGroup;
 
 public class ExerciseLog {
     private final Long id;
-    private final Long habitId;
     private final Long entryId;
     private final boolean exercised;
     private final Float hours;
@@ -12,10 +11,9 @@ public class ExerciseLog {
     private final Integer energyLevel;
     private final String skipReason;
 
-    public ExerciseLog(Long id, Long habitId, Long entryId, boolean exercised, Float hours,
+    public ExerciseLog(Long id, Long entryId, boolean exercised, Float hours,
             MuscularGroup muscularGroup, Integer energyLevel, String skipReason) {
         this.id = id;
-        this.habitId = habitId;
         this.entryId = entryId;
         this.exercised = exercised;
         this.hours = hours;
@@ -24,7 +22,7 @@ public class ExerciseLog {
         this.skipReason = skipReason;
     }
 
-    public static ExerciseLog create(Long habitId, Long entryId, boolean exercised, Float hours,
+    public static ExerciseLog create(Long entryId, boolean exercised, Float hours,
             MuscularGroup muscularGroup, Integer energyLevel, String skipReason) {
         if (exercised) {
             if (hours == null || hours < 0.1 || hours > 12)
@@ -37,15 +35,11 @@ public class ExerciseLog {
             if (skipReason == null || skipReason.isBlank())
                 throw new IllegalArgumentException("Si no entrenó, skipReason es obligatorio");
         }
-        return new ExerciseLog(null, habitId, entryId, exercised, hours, muscularGroup, energyLevel, skipReason);
+        return new ExerciseLog(null, entryId, exercised, hours, muscularGroup, energyLevel, skipReason);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getHabitId() {
-        return habitId;
     }
 
     public Long getEntryId() {
@@ -74,7 +68,6 @@ public class ExerciseLog {
 
     public ExerciseLog update(boolean exerc, Float hs, MuscularGroup mg, Integer energy, String skipReason) {
         ExerciseLog updated = ExerciseLog.create(
-                this.habitId,
                 this.entryId,
                 exerc,
                 hs,
@@ -83,7 +76,6 @@ public class ExerciseLog {
                 skipReason);
         return new ExerciseLog(
                 this.id,
-                this.habitId,
                 this.entryId,
                 updated.exercised,
                 updated.hours,

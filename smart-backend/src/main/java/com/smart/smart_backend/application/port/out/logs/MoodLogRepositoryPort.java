@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface MoodLogRepositoryPort {
     MoodLog save(MoodLog moodLog);
-    boolean existByHabitIdAndEntryId(Long habitId, Long entryId);
-    Optional<MoodLog> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    boolean existByEntryId(Long entryId);
+    Optional<MoodLog> findByEntryId(Long entryId);
 }

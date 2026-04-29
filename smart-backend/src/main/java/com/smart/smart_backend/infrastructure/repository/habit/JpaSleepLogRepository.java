@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface JpaSleepLogRepository extends JpaRepository<SleepLogEntity, Long> {
-    Optional<SleepLogEntity> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    Optional<SleepLogEntity> findByEntryId(Long entryId);
     List<SleepLogEntity> findAllByEntryIdIn(List<Long> entryIds);
 }

@@ -24,13 +24,13 @@ public class NutritionLogRepositoryAdapter implements NutritionLogRepositoryPort
     }
 
     @Override
-    public boolean existByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaNutritionLogRepository.findByHabitIdAndEntryId(habitId, entryId).isPresent();
+    public boolean existByEntryId(Long entryId) {
+        return jpaNutritionLogRepository.findByEntryId(entryId).isPresent();
     }
 
     @Override
-    public Optional<NutritionLog> findByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaNutritionLogRepository.findByHabitIdAndEntryId(habitId, entryId)
+    public Optional<NutritionLog> findByEntryId(Long entryId) {
+        return jpaNutritionLogRepository.findByEntryId(entryId)
                 .map(nutritionLogEntityMapper::toDomain);
     }
 }

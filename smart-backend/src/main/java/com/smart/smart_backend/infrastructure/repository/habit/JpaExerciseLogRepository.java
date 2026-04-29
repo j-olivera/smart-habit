@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface JpaExerciseLogRepository extends JpaRepository<ExerciseLogEntity, Long> {
-    Optional<ExerciseLogEntity> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    Optional<ExerciseLogEntity> findByEntryId(Long entryId);
     List<ExerciseLogEntity> findAllByEntryIdIn(List<Long> entryIds);
 }

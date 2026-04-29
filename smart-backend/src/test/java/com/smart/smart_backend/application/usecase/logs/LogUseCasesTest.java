@@ -5,9 +5,7 @@ import com.smart.smart_backend.application.dto.habit.log.StudyLogResponseDto;
 import com.smart.smart_backend.application.port.out.habit.HabitRepositoryPort;
 import com.smart.smart_backend.application.port.out.logs.StudyLogRepositoryPort;
 import com.smart.smart_backend.application.port.out.register.DailyEntryRepositoryPort;
-import com.smart.smart_backend.domain.enums.HabitType;
 import com.smart.smart_backend.domain.model.habit.DailyEntry;
-import com.smart.smart_backend.domain.model.habit.Habit;
 import com.smart.smart_backend.domain.model.habit.StudyLog;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +25,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LogUseCasesTest {
 
-    @Mock private HabitRepositoryPort habitRepositoryPort;
     @Mock private DailyEntryRepositoryPort dailyEntryRepositoryPort;
     @Mock private StudyLogRepositoryPort studyLogRepositoryPort;
 
@@ -35,7 +32,7 @@ class LogUseCasesTest {
 
     @BeforeEach
     void setUp() {
-        registerStudyLogUseCase = new RegisterStudyLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, studyLogRepositoryPort);
+        registerStudyLogUseCase = new RegisterStudyLogUseCase(dailyEntryRepositoryPort, studyLogRepositoryPort);
     }
 
     @Test
@@ -44,14 +41,12 @@ class LogUseCasesTest {
         Long userId = 1L;
         Long habitId = 10L;
         Long entryId = 20L;
-        StudyLogRequestDto request = new StudyLogRequestDto(habitId, entryId, true, 2.0f, "Math", null);
+        StudyLogRequestDto request = new StudyLogRequestDto(entryId, true, 2.0f, "Math", null);
         
-        Habit habit = new Habit(habitId, userId, "Study", HabitType.STUDY, "desc", true, Instant.now());
         DailyEntry entry = DailyEntry.builder().id(entryId).userId(userId).date(LocalDate.now()).build();
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.of(entry));
-        when(studyLogRepositoryPort.findByHabitIdAndEntryId(habitId, entryId)).thenReturn(Optional.empty());
+        when(studyLogRepositoryPort.findByEntryId(entryId)).thenReturn(Optional.empty());
         
         when(studyLogRepositoryPort.save(any(StudyLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -71,15 +66,13 @@ class LogUseCasesTest {
         Long habitId = 10L;
         Long entryId = 20L;
         Long existingLogId = 500L;
-        StudyLogRequestDto request = new StudyLogRequestDto(habitId, entryId, true, 3.0f, "Science", null);
+        StudyLogRequestDto request = new StudyLogRequestDto(entryId, true, 3.0f, "Science", null);
         
-        Habit habit = new Habit(habitId, userId, "Study", HabitType.STUDY, "desc", true, Instant.now());
         DailyEntry entry = DailyEntry.builder().id(entryId).userId(userId).date(LocalDate.now()).build();
-        StudyLog existingLog = new StudyLog(existingLogId, habitId, entryId, true, 2.0f, "Math", null);
+        StudyLog existingLog = new StudyLog(existingLogId, entryId, true, 2.0f, "Math", null);
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.of(entry));
-        when(studyLogRepositoryPort.findByHabitIdAndEntryId(habitId, entryId)).thenReturn(Optional.of(existingLog));
+        when(studyLogRepositoryPort.findByEntryId(entryId)).thenReturn(Optional.of(existingLog));
         
         when(studyLogRepositoryPort.save(any(StudyLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 

@@ -8,11 +8,8 @@ import com.smart.smart_backend.application.port.out.register.DailyEntryRepositor
 import com.smart.smart_backend.domain.enums.HabitType;
 import com.smart.smart_backend.domain.enums.MuscularGroup;
 import com.smart.smart_backend.domain.exception.EntryNotFoundException;
-import com.smart.smart_backend.domain.exception.HabitNotFoundException;
-import com.smart.smart_backend.domain.exception.HabitTypeMisMatchException;
 import com.smart.smart_backend.domain.model.habit.DailyEntry;
 import com.smart.smart_backend.domain.model.habit.ExerciseLog;
-import com.smart.smart_backend.domain.model.habit.Habit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +29,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LogUseCasesAdditionalTest {
 
-    @Mock private HabitRepositoryPort habitRepositoryPort;
     @Mock private DailyEntryRepositoryPort dailyEntryRepositoryPort;
     @Mock private ExerciseLogRepositoryPort exerciseLogRepositoryPort;
 
@@ -41,7 +37,7 @@ class LogUseCasesAdditionalTest {
     @BeforeEach
     void setUp() {
         registerExerciseLogUseCase = new RegisterExerciseLogUseCase(
-                habitRepositoryPort, dailyEntryRepositoryPort, exerciseLogRepositoryPort);
+                dailyEntryRepositoryPort, exerciseLogRepositoryPort);
     }
 
     // ──────────────────────────────────────────────
@@ -52,12 +48,8 @@ class LogUseCasesAdditionalTest {
     void shouldRegisterExerciseLogSuccessfully() {
         // Given
         Long userId = 1L;
-        Long habitId = 10L;
         Long entryId = 20L;
 
-        Habit habit = new Habit(habitId, userId, "Ejercicio", HabitType.EXERCISE, "desc", true, Instant.now());
-        
-        // Use builder pattern - need correct imports
         DailyEntry entry = DailyEntry.builder()
                 .id(entryId)
                 .userId(userId)
@@ -66,11 +58,10 @@ class LogUseCasesAdditionalTest {
                 .build();
 
         ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, true, 1.5f, MuscularGroup.CHEST, 80, null);
+                entryId, true, 1.5f, MuscularGroup.CHEST, 80, null);
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.of(entry));
-        when(exerciseLogRepositoryPort.findByHabitIdAndEntryId(habitId, entryId)).thenReturn(Optional.empty());
+        when(exerciseLogRepositoryPort.findByEntryId(entryId)).thenReturn(Optional.empty());
         when(exerciseLogRepositoryPort.save(any(ExerciseLog.class))).thenAnswer(inv -> {
             ExerciseLog log = inv.getArgument(0);
             return log;
@@ -86,53 +77,14 @@ class LogUseCasesAdditionalTest {
     }
 
     @Test
-    void shouldThrowHabitNotFoundException() {
-        // Given
-        Long userId = 1L;
-        Long habitId = 999L;
-        Long entryId = 20L;
-
-        ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
-
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.empty());
-
-        // When/Then
-        assertThatThrownBy(() -> registerExerciseLogUseCase.execute(userId, request))
-                .isInstanceOf(HabitNotFoundException.class);
-    }
-
-    @Test
-    void shouldThrowHabitTypeMisMatchException() {
-        // Given
-        Long userId = 1L;
-        Long habitId = 10L;
-        Long entryId = 20L;
-
-        // Wrong type - trying to log exercise on study habit
-        Habit habit = new Habit(habitId, userId, "Estudiar", HabitType.STUDY, "desc", true, Instant.now());
-        ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
-
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
-
-        // When/Then
-        assertThatThrownBy(() -> registerExerciseLogUseCase.execute(userId, request))
-                .isInstanceOf(HabitTypeMisMatchException.class);
-    }
-
-    @Test
     void shouldThrowEntryNotFoundException() {
         // Given
         Long userId = 1L;
-        Long habitId = 10L;
         Long entryId = 999L;
 
-        Habit habit = new Habit(habitId, userId, "Ejercicio", HabitType.EXERCISE, "desc", true, Instant.now());
         ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
+                entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.empty());
 
         // When/Then
@@ -144,20 +96,17 @@ class LogUseCasesAdditionalTest {
     void shouldSkipExerciseWhenNotExercised() {
         // Given
         Long userId = 1L;
-        Long habitId = 10L;
         Long entryId = 20L;
 
-        Habit habit = new Habit(habitId, userId, "Ejercicio", HabitType.EXERCISE, "desc", true, Instant.now());
         DailyEntry entry = DailyEntry.builder()
                 .id(entryId).userId(userId).date(LocalDate.now()).build();
 
         // exercised = false, skipReason provided
         ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, false, null, null, null, "cansado");
+                entryId, false, null, null, null, "cansado");
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.of(entry));
-        when(exerciseLogRepositoryPort.findByHabitIdAndEntryId(habitId, entryId)).thenReturn(Optional.empty());
+        when(exerciseLogRepositoryPort.findByEntryId(entryId)).thenReturn(Optional.empty());
         when(exerciseLogRepositoryPort.save(any(ExerciseLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // When
@@ -172,23 +121,20 @@ class LogUseCasesAdditionalTest {
     void shouldUpdateExistingExerciseLog() {
         // Given
         Long userId = 1L;
-        Long habitId = 10L;
         Long entryId = 20L;
         Long existingLogId = 500L;
 
-        Habit habit = new Habit(habitId, userId, "Ejercicio", HabitType.EXERCISE, "desc", true, Instant.now());
         DailyEntry entry = DailyEntry.builder()
                 .id(entryId).userId(userId).date(LocalDate.now()).build();
         
         // Use the constructor directly
-        ExerciseLog existingLog = new ExerciseLog(existingLogId, habitId, entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
+        ExerciseLog existingLog = new ExerciseLog(existingLogId, entryId, true, 1.0f, MuscularGroup.CHEST, 80, null);
 
         ExerciseLogRequestDto request = new ExerciseLogRequestDto(
-                habitId, entryId, true, 2.0f, MuscularGroup.LEGS, 90, null);
+                entryId, true, 2.0f, MuscularGroup.LEGS, 90, null);
 
-        when(habitRepositoryPort.findByIdAndUserId(habitId, userId)).thenReturn(Optional.of(habit));
         when(dailyEntryRepositoryPort.findByIdAndUserId(entryId, userId)).thenReturn(Optional.of(entry));
-        when(exerciseLogRepositoryPort.findByHabitIdAndEntryId(habitId, entryId)).thenReturn(Optional.of(existingLog));
+        when(exerciseLogRepositoryPort.findByEntryId(entryId)).thenReturn(Optional.of(existingLog));
         when(exerciseLogRepositoryPort.save(any(ExerciseLog.class))).thenAnswer(inv -> inv.getArgument(0));
 
         // When

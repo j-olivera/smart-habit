@@ -7,7 +7,7 @@ public class SleepLogMapper {
     public static SleepLogResponseDto toResponse(SleepLog sleepLog) {
         return new SleepLogResponseDto(
                 sleepLog.getId(),
-                sleepLog.getHabitId(),
+
                 sleepLog.getEntryId(),
                 sleepLog.getHours(),
                 sleepLog.getQuality(),

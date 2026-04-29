@@ -26,8 +26,6 @@ public class ExerciseLogEntity {
     @Column(name = "entry_id", nullable = false)
     private Long entryId;
 
-    @Column(name = "habit_id", nullable = false)
-    private Long habitId;
 
     @Column(nullable = false)
     private Boolean exercised;

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface JpaNutritionLogRepository extends JpaRepository<NutritionLogEntity, Long> {
-    Optional<NutritionLogEntity> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    Optional<NutritionLogEntity> findByEntryId(Long entryId);
     List<NutritionLogEntity> findAllByEntryIdIn(List<Long> entryIds);
 }

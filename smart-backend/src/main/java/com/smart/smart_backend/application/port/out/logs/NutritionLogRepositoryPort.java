@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface NutritionLogRepositoryPort {
     NutritionLog save(NutritionLog nutritionLog);
-    boolean existByHabitIdAndEntryId(Long habitId, Long entryId);
-    Optional<NutritionLog> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    boolean existByEntryId(Long entryId);
+    Optional<NutritionLog> findByEntryId(Long entryId);
 }

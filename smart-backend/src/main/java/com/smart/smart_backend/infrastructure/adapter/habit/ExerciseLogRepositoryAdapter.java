@@ -24,13 +24,13 @@ public class ExerciseLogRepositoryAdapter implements ExerciseLogRepositoryPort {
     }
 
     @Override
-    public boolean existByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaExerciseLogRepository.findByHabitIdAndEntryId(habitId, entryId).isPresent();
+    public boolean existByEntryId(Long entryId) {
+        return jpaExerciseLogRepository.findByEntryId(entryId).isPresent();
     }
 
     @Override
-    public Optional<ExerciseLog> findByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaExerciseLogRepository.findByHabitIdAndEntryId(habitId, entryId)
+    public Optional<ExerciseLog> findByEntryId(Long entryId) {
+        return jpaExerciseLogRepository.findByEntryId(entryId)
                 .map(exerciseLogEntityMapper::toDomain);
     }
 }

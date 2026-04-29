@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface JpaStudyLogRepository extends JpaRepository<StudyLogEntity, Long> {
-    Optional<StudyLogEntity> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    Optional<StudyLogEntity> findByEntryId(Long entryId);
     List<StudyLogEntity> findAllByEntryIdIn(List<Long> entryIds);
 }

@@ -25,7 +25,7 @@ public class WeeklyReportScheduler {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(cron = "59 23 * * SUN") // Domingos 23:59
+    @Scheduled(cron = "0 59 23 * * SUN") // Domingos 23:59:00
     public void generateReportsForAllUsers() {
         LocalDate weekStart = LocalDate.now().with(DayOfWeek.MONDAY);
         log.info("Starting scheduled weekly report generation for week: {}", weekStart);

@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface SleepLogRepositoryPort {
     SleepLog save(SleepLog sleepLog);
-    boolean existByHabitIdAndEntryId(Long habitId, Long entryId);
-    Optional<SleepLog> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    boolean existByEntryId(Long entryId);
+    Optional<SleepLog> findByEntryId(Long entryId);
 }

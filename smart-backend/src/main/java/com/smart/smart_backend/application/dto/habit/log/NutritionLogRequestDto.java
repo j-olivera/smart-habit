@@ -4,9 +4,7 @@ import com.smart.smart_backend.domain.enums.NutritionRating;
 import jakarta.validation.constraints.NotNull;
 
 public record NutritionLogRequestDto(
-    @NotNull(message = "Habit ID is required")
-    Long habitId,
-    
+
     @NotNull(message = "Entry ID is required")
     Long entryId,
     

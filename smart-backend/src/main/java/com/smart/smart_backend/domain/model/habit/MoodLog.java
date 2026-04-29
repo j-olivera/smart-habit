@@ -4,7 +4,6 @@ import com.smart.smart_backend.domain.enums.MoodLevel;
 
 public class MoodLog {
     private final Long id;
-    private final Long habitId;
     private final Long entryId;
     private final MoodLevel mood;
     private final boolean hasObservations;
@@ -12,10 +11,9 @@ public class MoodLog {
     private final boolean socialized;
     private final String socialWith;
 
-    public MoodLog(Long id, Long habitId, Long entryId, MoodLevel mood, boolean hasObservations,
+    public MoodLog(Long id, Long entryId, MoodLevel mood, boolean hasObservations,
             String eventDescription, boolean socialized, String socialWith) {
         this.id = id;
-        this.habitId = habitId;
         this.entryId = entryId;
         this.mood = mood;
         this.hasObservations = hasObservations;
@@ -24,7 +22,7 @@ public class MoodLog {
         this.socialWith = socialWith;
     }
 
-    public static MoodLog create(Long habitId, Long entryId, MoodLevel mood, boolean hasObservations,
+    public static MoodLog create(Long entryId, MoodLevel mood, boolean hasObservations,
             String eventDescription, boolean socialized, String socialWith) {
         if (mood == null)
             throw new IllegalArgumentException("Mood level es obligatorio");
@@ -33,15 +31,11 @@ public class MoodLog {
         if (socialized && (socialWith == null || socialWith.isBlank()))
             throw new IllegalArgumentException("Si socializó, socialWith es obligatorio");
 
-        return new MoodLog(null, habitId, entryId, mood, hasObservations, eventDescription, socialized, socialWith);
+        return new MoodLog(null, entryId, mood, hasObservations, eventDescription, socialized, socialWith);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getHabitId() {
-        return habitId;
     }
 
     public Long getEntryId() {
@@ -70,7 +64,6 @@ public class MoodLog {
 
     public MoodLog update(MoodLevel mood, boolean hasObs, String eventDesc, boolean socialized, String socialWith) {
         MoodLog updated = MoodLog.create(
-                this.habitId,
                 this.entryId,
                 mood,
                 hasObs,
@@ -79,7 +72,6 @@ public class MoodLog {
                 socialWith);
         return new MoodLog(
                 this.id,
-                this.habitId,
                 this.entryId,
                 updated.mood,
                 updated.hasObservations,

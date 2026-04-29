@@ -2,17 +2,15 @@ package com.smart.smart_backend.domain.model.habit;
 
 public class StudyLog {
     private final Long id;
-    private final Long habitId;
     private final Long entryId;
     private final boolean studied;
     private final Float hours;
     private final String subject;
     private final String skipReason; // nulo si studied is false
 
-    public StudyLog(Long id, Long habitId, Long entryId, boolean studied, Float hours, String subject,
+    public StudyLog(Long id, Long entryId, boolean studied, Float hours, String subject,
             String skipReason) {
         this.id = id;
-        this.habitId = habitId;
         this.entryId = entryId;
         this.studied = studied;
         this.hours = hours;
@@ -20,7 +18,7 @@ public class StudyLog {
         this.skipReason = skipReason;
     }
 
-    public static StudyLog create(Long habitId, Long entryId,
+    public static StudyLog create(Long entryId,
             boolean studied, Float hours,
             String subject, String skipReason) {
         if (studied) {
@@ -35,16 +33,12 @@ public class StudyLog {
                 throw new IllegalArgumentException(
                         "Si no estudió, skipReason es obligatorio");
         }
-        return new StudyLog(null, habitId, entryId,
+        return new StudyLog(null, entryId,
                 studied, hours, subject, skipReason);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getHabitId() {
-        return habitId;
     }
 
     public Long getEntryId() {
@@ -70,7 +64,6 @@ public class StudyLog {
     //cambio
     public StudyLog update(boolean stud, Float hs, String subj, String skipReason){
         StudyLog updated = StudyLog.create(
-                this.habitId,
                 this.entryId,
                 stud,
                 hs,
@@ -79,7 +72,6 @@ public class StudyLog {
         );
         return new StudyLog(
                 this.id,              // conserva el id actual
-                this.habitId,
                 this.entryId,
                 updated.studied,
                 updated.hours,

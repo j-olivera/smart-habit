@@ -24,13 +24,13 @@ public class MoodLogRepositoryAdapter implements MoodLogRepositoryPort {
     }
 
     @Override
-    public boolean existByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaMoodLogRepository.findByHabitIdAndEntryId(habitId, entryId).isPresent();
+    public boolean existByEntryId(Long entryId) {
+        return jpaMoodLogRepository.findByEntryId(entryId).isPresent();
     }
 
     @Override
-    public Optional<MoodLog> findByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaMoodLogRepository.findByHabitIdAndEntryId(habitId, entryId)
+    public Optional<MoodLog> findByEntryId(Long entryId) {
+        return jpaMoodLogRepository.findByEntryId(entryId)
                 .map(moodLogEntityMapper::toDomain);
     }
 }

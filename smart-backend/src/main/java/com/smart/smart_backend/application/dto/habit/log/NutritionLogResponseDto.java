@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record NutritionLogResponseDto(
     Long id,
-    Long habitId,
+
     Long entryId,
     NutritionRating rating,
     boolean hasObservation,

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface JpaMoodLogRepository extends JpaRepository<MoodLogEntity, Long> {
-    Optional<MoodLogEntity> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    Optional<MoodLogEntity> findByEntryId(Long entryId);
     List<MoodLogEntity> findAllByEntryIdIn(List<Long> entryIds);
 }

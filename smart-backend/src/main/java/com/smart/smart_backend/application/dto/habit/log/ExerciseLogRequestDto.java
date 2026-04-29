@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public record ExerciseLogRequestDto(
-    @NotNull(message = "Habit ID is required")
-    Long habitId,
-    
+
     @NotNull(message = "Entry ID is required")
     Long entryId,
     

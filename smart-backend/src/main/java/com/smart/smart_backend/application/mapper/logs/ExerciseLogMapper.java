@@ -7,7 +7,7 @@ public class ExerciseLogMapper {
     public static ExerciseLogResponseDto toResponse(ExerciseLog exerciseLog) {
         return new ExerciseLogResponseDto(
                 exerciseLog.getId(),
-                exerciseLog.getHabitId(),
+
                 exerciseLog.getEntryId(),
                 exerciseLog.isExercised(),
                 exerciseLog.getHours(),

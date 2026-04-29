@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface ExerciseLogRepositoryPort {
     ExerciseLog save(ExerciseLog exerciseLog);
-    boolean existByHabitIdAndEntryId(Long habitId, Long entryId);
-    Optional<ExerciseLog> findByHabitIdAndEntryId(Long habitId, Long entryId);
+    boolean existByEntryId(Long entryId);
+    Optional<ExerciseLog> findByEntryId(Long entryId);
 }

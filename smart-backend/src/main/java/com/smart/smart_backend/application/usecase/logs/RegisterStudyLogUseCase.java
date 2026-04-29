@@ -6,24 +6,16 @@ import com.smart.smart_backend.application.mapper.logs.StudyLogMapper;
 import com.smart.smart_backend.application.port.in.logs.RegisterStudyLog;
 import com.smart.smart_backend.application.port.out.logs.StudyLogRepositoryPort;
 import com.smart.smart_backend.application.port.out.register.DailyEntryRepositoryPort;
-import com.smart.smart_backend.application.port.out.habit.HabitRepositoryPort;
-import com.smart.smart_backend.domain.enums.HabitType;
 import com.smart.smart_backend.domain.exception.DuplicateHabitLogException;
 import com.smart.smart_backend.domain.exception.EntryNotFoundException;
-import com.smart.smart_backend.domain.exception.HabitTypeMisMatchException;
-import com.smart.smart_backend.domain.model.habit.Habit;
-import com.smart.smart_backend.domain.exception.HabitNotFoundException;
 import com.smart.smart_backend.domain.model.habit.StudyLog;
 
 public class RegisterStudyLogUseCase implements RegisterStudyLog {
 
-    private final HabitRepositoryPort habitRepositoryPort;
     private final DailyEntryRepositoryPort dailyEntryRepositoryPort;
     private final StudyLogRepositoryPort studyLogRepositoryPort;
 
-    public RegisterStudyLogUseCase(HabitRepositoryPort habitRepositoryPort,
-            DailyEntryRepositoryPort dailyEntryRepositoryPort, StudyLogRepositoryPort studyLogRepositoryPort) {
-        this.habitRepositoryPort = habitRepositoryPort;
+    public RegisterStudyLogUseCase(DailyEntryRepositoryPort dailyEntryRepositoryPort, StudyLogRepositoryPort studyLogRepositoryPort) {
         this.dailyEntryRepositoryPort = dailyEntryRepositoryPort;
         this.studyLogRepositoryPort = studyLogRepositoryPort;
     }
@@ -31,26 +23,17 @@ public class RegisterStudyLogUseCase implements RegisterStudyLog {
     @Override
     public StudyLogResponseDto execute(Long userId, StudyLogRequestDto requestDto) {
 
-        Habit habit = habitRepositoryPort.findByIdAndUserId(requestDto.habitId(), userId)
-                .orElseThrow(()-> new HabitNotFoundException(requestDto.habitId()));
-
-        if(habit.getType() != HabitType.STUDY){
-            throw new HabitTypeMisMatchException(habit.getType(), HabitType.STUDY);
-        }
-
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-
-
-        StudyLog log = studyLogRepositoryPort.findByHabitIdAndEntryId(
-                requestDto.habitId(), requestDto.entryId())
+        StudyLog log = studyLogRepositoryPort.findByEntryId(
+                requestDto.entryId())
                 .map(existing -> existing.update(
                         requestDto.studied(),requestDto.hours(),
                         requestDto.subject(),requestDto.skipReason()
                 ))
                 .orElseGet(() -> StudyLog.create(
-                        requestDto.habitId(), requestDto.entryId(),
+                        requestDto.entryId(),
                         requestDto.studied(), requestDto.hours(),
                         requestDto.subject(), requestDto.skipReason()
                 ));

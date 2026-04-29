@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record ExerciseLogResponseDto(
     Long id,
-    Long habitId,
+
     Long entryId,
     boolean exercised,
     Float hours,

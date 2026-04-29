@@ -7,23 +7,16 @@ import com.smart.smart_backend.application.port.in.logs.RegisterExerciseLog;
 import com.smart.smart_backend.application.port.out.habit.HabitRepositoryPort;
 import com.smart.smart_backend.application.port.out.logs.ExerciseLogRepositoryPort;
 import com.smart.smart_backend.application.port.out.register.DailyEntryRepositoryPort;
-import com.smart.smart_backend.domain.enums.HabitType;
 import com.smart.smart_backend.domain.exception.DuplicateHabitLogException;
 import com.smart.smart_backend.domain.exception.EntryNotFoundException;
-import com.smart.smart_backend.domain.exception.HabitNotFoundException;
-import com.smart.smart_backend.domain.exception.HabitTypeMisMatchException;
 import com.smart.smart_backend.domain.model.habit.ExerciseLog;
-import com.smart.smart_backend.domain.model.habit.Habit;
 
 public class RegisterExerciseLogUseCase implements RegisterExerciseLog {
 
-    private final HabitRepositoryPort habitRepositoryPort;
     private final DailyEntryRepositoryPort dailyEntryRepositoryPort;
     private final ExerciseLogRepositoryPort exerciseLogRepositoryPort;
 
-    public RegisterExerciseLogUseCase(HabitRepositoryPort habitRepositoryPort,
-            DailyEntryRepositoryPort dailyEntryRepositoryPort, ExerciseLogRepositoryPort exerciseLogRepositoryPort) {
-        this.habitRepositoryPort = habitRepositoryPort;
+    public RegisterExerciseLogUseCase(DailyEntryRepositoryPort dailyEntryRepositoryPort, ExerciseLogRepositoryPort exerciseLogRepositoryPort) {
         this.dailyEntryRepositoryPort = dailyEntryRepositoryPort;
         this.exerciseLogRepositoryPort = exerciseLogRepositoryPort;
     }
@@ -31,17 +24,10 @@ public class RegisterExerciseLogUseCase implements RegisterExerciseLog {
     @Override
     public ExerciseLogResponseDto execute(Long userId, ExerciseLogRequestDto requestDto) {
 
-        Habit habit = habitRepositoryPort.findByIdAndUserId(requestDto.habitId(), userId)
-                .orElseThrow(() -> new HabitNotFoundException(requestDto.habitId()));
-
-        if (habit.getType() != HabitType.EXERCISE) {
-            throw new HabitTypeMisMatchException(habit.getType(), HabitType.EXERCISE);
-        }
-
         dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
                 .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
 
-        ExerciseLog exerciseLog = exerciseLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+        ExerciseLog exerciseLog = exerciseLogRepositoryPort.findByEntryId(requestDto.entryId())
                 .map(existing -> existing.update(
                         requestDto.exercised(),
                         requestDto.hours(),
@@ -50,7 +36,6 @@ public class RegisterExerciseLogUseCase implements RegisterExerciseLog {
                         requestDto.skipReason()
                 ))
                 .orElseGet(() -> ExerciseLog.create(
-                        requestDto.habitId(),
                         requestDto.entryId(),
                         requestDto.exercised(),
                         requestDto.hours(),

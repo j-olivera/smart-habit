@@ -12,7 +12,7 @@ public class NutritionLogEntityMapper {
         if (entity == null) return null;
         return new NutritionLog(
                 entity.getId(),
-                entity.getHabitId(),
+
                 entity.getEntryId(),
                 NutritionRating.valueOf(entity.getRating()),
                 entity.getHasObservations(),
@@ -24,7 +24,7 @@ public class NutritionLogEntityMapper {
         if (domain == null) return null;
         return NutritionLogEntity.builder()
                 .id(domain.getId())
-                .habitId(domain.getHabitId())
+
                 .entryId(domain.getEntryId())
                 .rating(domain.getRating().name())
                 .hasObservations(domain.isHasObservation())

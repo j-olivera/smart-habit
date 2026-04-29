@@ -4,7 +4,6 @@ import com.smart.smart_backend.domain.enums.SleepQuality;
 
 public class SleepLog {
     private final Long id;
-    private final Long habitId;
     private final Long entryId;
     private final Float hours;
     private final SleepQuality quality;
@@ -12,10 +11,9 @@ public class SleepLog {
     private final Float napHours;
     private final boolean napNeeded;
 
-    public SleepLog(Long id, Long habitId, Long entryId, Float hours, SleepQuality quality, boolean napped,
+    public SleepLog(Long id, Long entryId, Float hours, SleepQuality quality, boolean napped,
             Float napHours, boolean napNeeded) {
         this.id = id;
-        this.habitId = habitId;
         this.entryId = entryId;
         this.hours = hours;
         this.quality = quality;
@@ -24,7 +22,7 @@ public class SleepLog {
         this.napNeeded = napNeeded;
     }
 
-    public static SleepLog create(Long habitId, Long entryId, Float hours, SleepQuality quality, boolean napped,
+    public static SleepLog create(Long entryId, Float hours, SleepQuality quality, boolean napped,
             Float napHours, boolean napNeeded) {
         if (hours == null || hours < 0.1 || hours > 24)
             throw new IllegalArgumentException("Hours debe estar entre 0.1 y 24");
@@ -35,15 +33,11 @@ public class SleepLog {
                 throw new IllegalArgumentException("Si hizo siesta, napHours debe estar entre 0.1 y 12");
         }
 
-        return new SleepLog(null, habitId, entryId, hours, quality, napped, napHours, napNeeded);
+        return new SleepLog(null, entryId, hours, quality, napped, napHours, napNeeded);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getHabitId() {
-        return habitId;
     }
 
     public Long getEntryId() {
@@ -72,7 +66,6 @@ public class SleepLog {
 
     public SleepLog update(Float hs, SleepQuality quality, boolean napped, Float napHours, boolean napNeeded) {
         SleepLog updated = SleepLog.create(
-                this.habitId,
                 this.entryId,
                 hs,
                 quality,
@@ -81,7 +74,6 @@ public class SleepLog {
                 napNeeded);
         return new SleepLog(
                 this.id,
-                this.habitId,
                 this.entryId,
                 updated.hours,
                 updated.quality,

@@ -1,0 +1,21 @@
+- [x] **1. Migración de Base de Datos (V9)**
+  - [x] Crear archivo `V9__refactor_habits_and_add_personal.sql`
+  - [x] Eliminar columna `habit_id` y su índice de las 5 tablas fijas (`habit_study`, `habit_exercise`, `habit_nutrition`, `habit_mood`, `habit_sleep`).
+  - [x] Crear tabla `habit_personal` (id, entry_id, habit_id, completed, hours, description).
+- [x] **2. Capa de Dominio**
+  - [x] Agregar `PERSONAL` a `HabitType.java`.
+  - [x] Remover `habitId` de los modelos de las 5 categorías fijas.
+  - [x] Crear `PersonalLog.java`.
+- [x] **3. Infraestructura - Modelos y Mappers**
+  - [x] Modificar `StudyLogEntity`, `ExerciseLogEntity`, etc. para remover la relación con `HabitEntity`.
+  - [x] Crear `PersonalLogEntity`.
+  - [x] Actualizar Mappers para reflejar la eliminación del `habitId`.
+- [x] **4. Capa de Aplicación - DTOs y Casos de Uso**
+  - [x] Remover `habitId` de los `RequestDto` fijos.
+  - [x] Modificar `RegisterStudyLogUseCase` (y los otros 4) para no depender del Repositorio de Hábitos.
+  - [x] Modificar `RegisterHabitUseCase` para restringir tipo a `PERSONAL`.
+  - [x] Crear `RegisterPersonalLogUseCase`.
+- [x] **5. Capa de Infraestructura - Controladores y Tests**
+  - [x] Limpiar `HabitLogController` de `habitId` para las 5 llamadas.
+  - [x] Agregar endpoint `/personal` en `HabitLogController`.
+  - [x] Arreglar todos los tests rotos en la capa `application` e `infrastructure`.

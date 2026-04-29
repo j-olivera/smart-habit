@@ -12,7 +12,7 @@ public class MoodLogEntityMapper {
         if (entity == null) return null;
         return new MoodLog(
                 entity.getId(),
-                entity.getHabitId(),
+
                 entity.getEntryId(),
                 MoodLevel.valueOf(entity.getMood()),
                 entity.getHasObservations(),
@@ -26,7 +26,7 @@ public class MoodLogEntityMapper {
         if (domain == null) return null;
         return MoodLogEntity.builder()
                 .id(domain.getId())
-                .habitId(domain.getHabitId())
+
                 .entryId(domain.getEntryId())
                 .mood(domain.getMood().name())
                 .hasObservations(domain.isHasObservations())

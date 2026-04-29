@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public record SleepLogResponseDto(
     Long id,
-    Long habitId,
+
     Long entryId,
     Float hours,
     SleepQuality quality,

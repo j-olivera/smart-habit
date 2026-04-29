@@ -27,7 +27,6 @@ public class LogEntityMapper {
         if (entity == null) return null;
         return new StudyLogResponseDto(
                 entity.getId(),
-                entity.getHabitId(),
                 entity.getEntryId(),
                 entity.getStudied(),
                 entity.getHours(),
@@ -40,7 +39,6 @@ public class LogEntityMapper {
         if (entity == null) return null;
         return new ExerciseLogResponseDto(
                 entity.getId(),
-                entity.getHabitId(),
                 entity.getEntryId(),
                 entity.getExercised(),
                 entity.getHours(),
@@ -54,7 +52,6 @@ public class LogEntityMapper {
         if (entity == null) return null;
         return new NutritionLogResponseDto(
                 entity.getId(),
-                entity.getHabitId(),
                 entity.getEntryId(),
                 NutritionRating.valueOf(entity.getRating()),
                 entity.getHasObservations(),
@@ -66,7 +63,6 @@ public class LogEntityMapper {
         if (entity == null) return null;
         return new MoodLogResponseDto(
                 entity.getId(),
-                entity.getHabitId(),
                 entity.getEntryId(),
                 MoodLevel.valueOf(entity.getMood()),
                 entity.getHasObservations(),
@@ -80,7 +76,6 @@ public class LogEntityMapper {
         if (entity == null) return null;
         return new SleepLogResponseDto(
                 entity.getId(),
-                entity.getHabitId(),
                 entity.getEntryId(),
                 entity.getHours(),
                 SleepQuality.valueOf(entity.getQuality()),

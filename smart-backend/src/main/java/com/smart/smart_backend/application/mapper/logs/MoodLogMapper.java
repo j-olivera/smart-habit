@@ -7,7 +7,7 @@ public class MoodLogMapper {
     public static MoodLogResponseDto toResponse(MoodLog moodLog) {
         return new MoodLogResponseDto(
                 moodLog.getId(),
-                moodLog.getHabitId(),
+
                 moodLog.getEntryId(),
                 moodLog.getMood(),
                 moodLog.isHasObservations(),

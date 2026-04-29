@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "habit_sleep")
-public class SleepLogEntity {
+@Table(name = "habit_personal")
+public class PersonalLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,19 +26,14 @@ public class SleepLogEntity {
     @Column(name = "entry_id", nullable = false)
     private Long entryId;
 
+    @Column(name = "habit_id", nullable = false)
+    private Long habitId;
 
     @Column(nullable = false)
+    private Boolean completed;
+
     private Float hours;
 
-    @Column(nullable = false)
-    private String quality;
-
-    @Column(nullable = false)
-    private Boolean napped;
-
-    @Column(name = "nap_hours")
-    private Float napHours;
-
-    @Column(name = "nap_needed")
-    private Boolean napNeeded;
+    @Column(length = 500)
+    private String description;
 }

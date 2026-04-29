@@ -5,5 +5,6 @@ public enum HabitType {
     EXERCISE,
     NUTRITION,
     MOOD,
-    SLEEP
+    SLEEP,
+    PERSONAL
 }

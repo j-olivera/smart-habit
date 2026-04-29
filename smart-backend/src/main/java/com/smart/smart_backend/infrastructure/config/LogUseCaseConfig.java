@@ -12,41 +12,44 @@ public class LogUseCaseConfig {
 
     @Bean
     public RegisterStudyLogUseCase registerStudyLogUseCase(
-            HabitRepositoryPort habitRepositoryPort,
             DailyEntryRepositoryPort dailyEntryRepositoryPort,
             StudyLogRepositoryPort studyLogRepositoryPort) {
-        return new RegisterStudyLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, studyLogRepositoryPort);
+        return new RegisterStudyLogUseCase(dailyEntryRepositoryPort, studyLogRepositoryPort);
     }
 
     @Bean
     public RegisterExerciseLogUseCase registerExerciseLogUseCase(
-            HabitRepositoryPort habitRepositoryPort,
             DailyEntryRepositoryPort dailyEntryRepositoryPort,
             ExerciseLogRepositoryPort exerciseLogRepositoryPort) {
-        return new RegisterExerciseLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, exerciseLogRepositoryPort);
+        return new RegisterExerciseLogUseCase(dailyEntryRepositoryPort, exerciseLogRepositoryPort);
     }
 
     @Bean
     public RegisterMoodLogUseCase registerMoodLogUseCase(
-            HabitRepositoryPort habitRepositoryPort,
             DailyEntryRepositoryPort dailyEntryRepositoryPort,
             MoodLogRepositoryPort moodLogRepositoryPort) {
-        return new RegisterMoodLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, moodLogRepositoryPort);
+        return new RegisterMoodLogUseCase(dailyEntryRepositoryPort, moodLogRepositoryPort);
     }
 
     @Bean
     public RegisterNutritionLogUseCase registerNutritionLogUseCase(
-            HabitRepositoryPort habitRepositoryPort,
             DailyEntryRepositoryPort dailyEntryRepositoryPort,
             NutritionLogRepositoryPort nutritionLogRepositoryPort) {
-        return new RegisterNutritionLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, nutritionLogRepositoryPort);
+        return new RegisterNutritionLogUseCase(dailyEntryRepositoryPort, nutritionLogRepositoryPort);
     }
 
     @Bean
     public RegisterSleepLogUseCase registerSleepLogUseCase(
-            HabitRepositoryPort habitRepositoryPort,
             DailyEntryRepositoryPort dailyEntryRepositoryPort,
             SleepLogRepositoryPort sleepLogRepositoryPort) {
-        return new RegisterSleepLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, sleepLogRepositoryPort);
+        return new RegisterSleepLogUseCase(dailyEntryRepositoryPort, sleepLogRepositoryPort);
+    }
+
+    @Bean
+    public RegisterPersonalLogUseCase registerPersonalLogUseCase(
+            HabitRepositoryPort habitRepositoryPort,
+            DailyEntryRepositoryPort dailyEntryRepositoryPort,
+            PersonalLogRepositoryPort personalLogRepositoryPort) {
+        return new RegisterPersonalLogUseCase(habitRepositoryPort, dailyEntryRepositoryPort, personalLogRepositoryPort);
     }
 }

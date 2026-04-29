@@ -40,9 +40,9 @@ class HabitUseCasesTest {
     void shouldRegisterHabitSuccessfully() {
         // Given
         Long userId = 1L;
-        HabitRequestDto request = new HabitRequestDto("Estudiar Java", HabitType.STUDY, "Estudiar 1 hora diaria de Java");
+        HabitRequestDto request = new HabitRequestDto("Leer", HabitType.PERSONAL, "Leer un libro");
 
-        Habit savedHabit = new Habit(100L, userId, "Estudiar Java", HabitType.STUDY, "Estudiar 1 hora diaria de Java", true, Instant.now());
+        Habit savedHabit = new Habit(100L, userId, "Leer", HabitType.PERSONAL, "Leer un libro", true, Instant.now());
 
         when(habitRepositoryPort.saveHabit(any(Habit.class), eq(userId))).thenReturn(savedHabit);
 
@@ -52,8 +52,8 @@ class HabitUseCasesTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.id()).isEqualTo(100L);
-        assertThat(result.name()).isEqualTo("Estudiar Java");
-        assertThat(result.type()).isEqualTo(HabitType.STUDY);
+        assertThat(result.name()).isEqualTo("Leer");
+        assertThat(result.type()).isEqualTo(HabitType.PERSONAL);
     }
 
     @Test
@@ -61,8 +61,8 @@ class HabitUseCasesTest {
         // Given
         Long userId = 1L;
 
-        HabitRequestDto request1 = new HabitRequestDto("Estudiar Java", HabitType.STUDY, "Estudiar Java");
-        HabitRequestDto request2 = new HabitRequestDto("Ejercicio", HabitType.EXERCISE, "Hacer ejercicio");
+        HabitRequestDto request1 = new HabitRequestDto("Leer", HabitType.PERSONAL, "Leer un libro");
+        HabitRequestDto request2 = new HabitRequestDto("Meditar", HabitType.PERSONAL, "Meditar 10 mins");
 
         when(habitRepositoryPort.saveHabit(any(Habit.class), eq(userId)))
                 .thenAnswer(inv -> {

@@ -11,7 +11,7 @@ public class StudyLogEntityMapper {
         if (entity == null) return null;
         return new StudyLog(
                 entity.getId(),
-                entity.getHabitId(),
+
                 entity.getEntryId(),
                 entity.getStudied(),
                 entity.getHours(),
@@ -24,7 +24,7 @@ public class StudyLogEntityMapper {
         if (domain == null) return null;
         return StudyLogEntity.builder()
                 .id(domain.getId())
-                .habitId(domain.getHabitId())
+
                 .entryId(domain.getEntryId())
                 .studied(domain.isStudied())
                 .hours(domain.getHours())

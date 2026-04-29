@@ -70,7 +70,6 @@ class DailyEntryRepositoryAdapterTest {
         StudyLogEntity studyLogEntity = StudyLogEntity.builder()
                 .id(500L)
                 .entryId(100L)
-                .habitId(10L)
                 .studied(true)
                 .hours(2.0f)
                 .subject("Java")
@@ -129,7 +128,6 @@ class DailyEntryRepositoryAdapterTest {
         StudyLogEntity studyLog = StudyLogEntity.builder()
                 .id(1L)
                 .entryId(100L)
-                .habitId(1L)
                 .studied(true)
                 .hours(2.0f)
                 .subject("Java")
@@ -181,13 +179,13 @@ class DailyEntryRepositoryAdapterTest {
         );
 
         List<StudyLogEntity> studyLogs = List.of(
-                StudyLogEntity.builder().id(1L).entryId(1L).habitId(1L).studied(true).hours(2.0f).subject("Java").build(),
-                StudyLogEntity.builder().id(2L).entryId(2L).habitId(1L).studied(true).hours(3.0f).subject("Python").build()
+                StudyLogEntity.builder().id(1L).entryId(1L).studied(true).hours(2.0f).subject("Java").build(),
+                StudyLogEntity.builder().id(2L).entryId(2L).studied(true).hours(3.0f).subject("Python").build()
         );
 
         List<ExerciseLogEntity> exerciseLogs = List.of(
-                ExerciseLogEntity.builder().id(1L).entryId(1L).habitId(2L).exercised(true).hours(1.0f).muscleGroups("CHEST").build(),
-                ExerciseLogEntity.builder().id(2L).entryId(2L).habitId(2L).exercised(true).hours(1.5f).muscleGroups("LEGS").build()
+                ExerciseLogEntity.builder().id(1L).entryId(1L).exercised(true).hours(1.0f).muscleGroups("CHEST").build(),
+                ExerciseLogEntity.builder().id(2L).entryId(2L).exercised(true).hours(1.5f).muscleGroups("LEGS").build()
         );
 
         when(jpaDailyEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(userId, start, end))

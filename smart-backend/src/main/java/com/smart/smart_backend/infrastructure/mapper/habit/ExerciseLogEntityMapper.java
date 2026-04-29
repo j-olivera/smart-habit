@@ -12,7 +12,7 @@ public class ExerciseLogEntityMapper {
         if (entity == null) return null;
         return new ExerciseLog(
                 entity.getId(),
-                entity.getHabitId(),
+
                 entity.getEntryId(),
                 entity.getExercised(),
                 entity.getHours(),
@@ -26,7 +26,7 @@ public class ExerciseLogEntityMapper {
         if (domain == null) return null;
         return ExerciseLogEntity.builder()
                 .id(domain.getId())
-                .habitId(domain.getHabitId())
+
                 .entryId(domain.getEntryId())
                 .exercised(domain.isExercised())
                 .hours(domain.getHours())

@@ -17,13 +17,13 @@ public class StudyLogRepositoryAdapter implements StudyLogRepositoryPort {
     private final StudyLogEntityMapper studyLogEntityMapper;
 
     @Override
-    public boolean existByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaStudyLogRepository.findByHabitIdAndEntryId(habitId, entryId).isPresent();
+    public boolean existByEntryId(Long entryId) {
+        return jpaStudyLogRepository.findByEntryId(entryId).isPresent();
     }
 
     @Override
-    public Optional<StudyLog> findByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaStudyLogRepository.findByHabitIdAndEntryId(habitId, entryId)
+    public Optional<StudyLog> findByEntryId(Long entryId) {
+        return jpaStudyLogRepository.findByEntryId(entryId)
                 .map(studyLogEntityMapper::toDomain);
     }
 

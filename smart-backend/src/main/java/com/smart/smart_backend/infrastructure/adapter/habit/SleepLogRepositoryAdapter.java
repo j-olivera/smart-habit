@@ -24,13 +24,13 @@ public class SleepLogRepositoryAdapter implements SleepLogRepositoryPort {
     }
 
     @Override
-    public boolean existByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaSleepLogRepository.findByHabitIdAndEntryId(habitId, entryId).isPresent();
+    public boolean existByEntryId(Long entryId) {
+        return jpaSleepLogRepository.findByEntryId(entryId).isPresent();
     }
 
     @Override
-    public Optional<SleepLog> findByHabitIdAndEntryId(Long habitId, Long entryId) {
-        return jpaSleepLogRepository.findByHabitIdAndEntryId(habitId, entryId)
+    public Optional<SleepLog> findByEntryId(Long entryId) {
+        return jpaSleepLogRepository.findByEntryId(entryId)
                 .map(sleepLogEntityMapper::toDomain);
     }
 }
