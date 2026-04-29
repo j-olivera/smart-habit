@@ -59,3 +59,11 @@ public class RegisterPersonalLogUseCase implements RegisterPersonalLog {
         return PersonalLogMapper.toResponse(savedLog);
     }
 }
+/*
+A qué está atado el PersonalLog? A dos cosas:
+ al día de hoy (entryId) y a la rutina específica
+ que creó (habitId). Es la única tabla de logs que conservó
+el habitId porque es la única que necesita saber
+qué hábito personalizado estás cumpliendo.
+
+ */

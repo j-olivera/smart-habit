@@ -70,3 +70,6 @@ public class PersonalLog {
         );
     }
 }
+/*
+ mirar el funcionamiento de esta clase en /docs/registros
+ */

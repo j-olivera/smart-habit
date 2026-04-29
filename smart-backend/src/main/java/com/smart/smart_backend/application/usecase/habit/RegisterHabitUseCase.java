@@ -27,3 +27,10 @@ public class RegisterHabitUseCase implements CreateHabit {
         return HabitMapper.toResponse(save);
     }
 }
+/*
+¿Para qué sirve Habit ahora? Exclusivamente para Hábitos Personales (HabitType.PERSONAL).
+Los Use Cases (RegisterHabitUseCase, GetUserHabitsUseCase, etc.)
+siguen existiendo y son vitales, pero ahora su trabajo es permitirle
+al usuario definir: "Quiero empezar a meditar 10 minutos al día".
+Ese registro se guarda en la tabla habits y le pertenece a ese usuario.
+ */
