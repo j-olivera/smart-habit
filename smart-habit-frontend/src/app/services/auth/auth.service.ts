@@ -47,8 +47,8 @@ export class AuthService {
       appError.details = error.error?.details || error.error?.errors;
     } else if (error.status === 401) {
       // Dependiendo del error del backend puede ser credentials o token expirado
-      appError.code = error.error?.message?.toLowerCase().includes('credential') 
-        ? 'INVALID_CREDENTIALS' 
+      appError.code = error.error?.message?.toLowerCase().includes('credential')
+        ? 'INVALID_CREDENTIALS'
         : 'UNAUTHORIZED';
     } else if (error.status === 404) {
       appError.code = 'NOT_FOUND';
