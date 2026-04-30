@@ -7,6 +7,7 @@ import com.smart.smart_backend.application.port.in.report.GenerateWeeklyReportCo
 import com.smart.smart_backend.application.port.in.report.GenerateWeeklyReportPort;
 import com.smart.smart_backend.application.port.out.ai.AiAssistantPort;
 import com.smart.smart_backend.application.port.out.ai.PromptBuilderPort;
+import com.smart.smart_backend.application.port.out.habit.HabitRepositoryPort;
 import com.smart.smart_backend.application.port.out.report.WeeklyReportRepositoryPort;
 import com.smart.smart_backend.domain.exception.InsufficientDataException;
 import com.smart.smart_backend.domain.model.report.WeeklyReport;
@@ -70,7 +71,6 @@ public class GenerateWeeklyReportUseCase implements GenerateWeeklyReportPort {
                 saved.getWeekStart(),
                 saved.getWeekEnd(),
                 saved.getAiContent(),
-                saved.getGeneratedAt()
-        );
+                saved.getGeneratedAt());
     }
 }

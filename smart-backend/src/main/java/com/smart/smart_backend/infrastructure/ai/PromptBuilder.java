@@ -8,7 +8,6 @@ import com.smart.smart_backend.application.dto.habit.log.PersonalLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.SleepLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.StudyLogResponseDto;
 import com.smart.smart_backend.application.port.out.ai.PromptBuilderPort;
-import com.smart.smart_backend.infrastructure.repository.habit.JpaHabitRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -16,11 +15,6 @@ import java.util.List;
 
 @Component
 public class PromptBuilder implements PromptBuilderPort {
-    private final JpaHabitRepository habitRepositoryJpa;
-
-    public PromptBuilder(JpaHabitRepository habitRepositoryJpa) {
-        this.habitRepositoryJpa = habitRepositoryJpa;
-    }
 
     private static final String SYSTEM_PROMPT = """
                 Eres un coach de hábitos directo, honesto y emocionalmente inteligente.
@@ -161,10 +155,7 @@ public class PromptBuilder implements PromptBuilderPort {
         if (logs == null || logs.isEmpty())
             return;
         for (var l : logs) {
-            String habitName = habitRepositoryJpa.findById(l.habitId()).get().getName(); // se cambio para que busque el
-                                                                                         // nombre del habito para
-                                                                                         // mejorar el prompt
-            String nombre = habitName != null ? habitName : "Hábito personal";
+            String nombre = l.habitName() != null ? l.habitName() : "Hábito personal";
             String estado = l.completed() ? "Completado" : "No completado";
             sb.append("%s: %s".formatted(nombre, estado));
             if (l.hours() != null)

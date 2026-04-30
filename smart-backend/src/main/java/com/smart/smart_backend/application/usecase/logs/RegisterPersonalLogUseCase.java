@@ -16,54 +16,55 @@ import com.smart.smart_backend.domain.model.habit.PersonalLog;
 
 public class RegisterPersonalLogUseCase implements RegisterPersonalLog {
 
-    private final HabitRepositoryPort habitRepositoryPort;
-    private final DailyEntryRepositoryPort dailyEntryRepositoryPort;
-    private final PersonalLogRepositoryPort personalLogRepositoryPort;
+        private final HabitRepositoryPort habitRepositoryPort;
+        private final DailyEntryRepositoryPort dailyEntryRepositoryPort;
+        private final PersonalLogRepositoryPort personalLogRepositoryPort;
 
-    public RegisterPersonalLogUseCase(HabitRepositoryPort habitRepositoryPort,
-                                      DailyEntryRepositoryPort dailyEntryRepositoryPort,
-                                      PersonalLogRepositoryPort personalLogRepositoryPort) {
-        this.habitRepositoryPort = habitRepositoryPort;
-        this.dailyEntryRepositoryPort = dailyEntryRepositoryPort;
-        this.personalLogRepositoryPort = personalLogRepositoryPort;
-    }
-
-    @Override
-    public PersonalLogResponseDto execute(Long userId, PersonalLogRequestDto requestDto) {
-
-        Habit habit = habitRepositoryPort.findByIdAndUserId(requestDto.habitId(), userId)
-                .orElseThrow(() -> new HabitNotFoundException(requestDto.habitId()));
-
-        if (habit.getType() != HabitType.PERSONAL) {
-            throw new HabitTypeMisMatchException(habit.getType(), HabitType.PERSONAL);
+        public RegisterPersonalLogUseCase(HabitRepositoryPort habitRepositoryPort,
+                        DailyEntryRepositoryPort dailyEntryRepositoryPort,
+                        PersonalLogRepositoryPort personalLogRepositoryPort) {
+                this.habitRepositoryPort = habitRepositoryPort;
+                this.dailyEntryRepositoryPort = dailyEntryRepositoryPort;
+                this.personalLogRepositoryPort = personalLogRepositoryPort;
         }
 
-        dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
-                .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
+        @Override
+        public PersonalLogResponseDto execute(Long userId, PersonalLogRequestDto requestDto) {
 
-        PersonalLog log = personalLogRepositoryPort.findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
-                .map(existing -> existing.update(
-                        requestDto.completed(),
-                        requestDto.hours(),
-                        requestDto.description()
-                ))
-                .orElseGet(() -> PersonalLog.create(
-                        requestDto.habitId(),
-                        requestDto.entryId(),
-                        requestDto.completed(),
-                        requestDto.hours(),
-                        requestDto.description()
-                ));
+                Habit habit = habitRepositoryPort.findByIdAndUserId(requestDto.habitId(), userId)
+                                .orElseThrow(() -> new HabitNotFoundException(requestDto.habitId()));
 
-        PersonalLog savedLog = personalLogRepositoryPort.save(log);
-        return PersonalLogMapper.toResponse(savedLog);
-    }
+                if (habit.getType() != HabitType.PERSONAL) {
+                        throw new HabitTypeMisMatchException(habit.getType(), HabitType.PERSONAL);
+                }
+
+                String habitN = habit.getName();
+
+                dailyEntryRepositoryPort.findByIdAndUserId(requestDto.entryId(), userId)
+                                .orElseThrow(() -> new EntryNotFoundException(requestDto.entryId()));
+
+                PersonalLog log = personalLogRepositoryPort
+                                .findByHabitIdAndEntryId(requestDto.habitId(), requestDto.entryId())
+                                .map(existing -> existing.update(
+                                                requestDto.completed(),
+                                                requestDto.hours(),
+                                                requestDto.description()))
+                                .orElseGet(() -> PersonalLog.create(
+                                                requestDto.habitId(),
+                                                requestDto.entryId(),
+                                                requestDto.completed(),
+                                                requestDto.hours(),
+                                                requestDto.description()));
+
+                PersonalLog savedLog = personalLogRepositoryPort.save(log);
+                return PersonalLogMapper.toResponse(savedLog, habitN);
+        }
 }
 /*
-A qué está atado el PersonalLog? A dos cosas:
- al día de hoy (entryId) y a la rutina específica
- que creó (habitId). Es la única tabla de logs que conservó
-el habitId porque es la única que necesita saber
-qué hábito personalizado estás cumpliendo.
-
+ * A qué está atado el PersonalLog? A dos cosas:
+ * al día de hoy (entryId) y a la rutina específica
+ * que creó (habitId). Es la única tabla de logs que conservó
+ * el habitId porque es la única que necesita saber
+ * qué hábito personalizado estás cumpliendo.
+ * 
  */

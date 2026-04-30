@@ -26,19 +26,20 @@ import java.util.List;
 public class LogEntityMapper {
 
     public StudyLogResponseDto toStudyDto(StudyLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new StudyLogResponseDto(
                 entity.getId(),
                 entity.getEntryId(),
                 entity.getStudied(),
                 entity.getHours(),
                 entity.getSubject(),
-                entity.getSkipReason()
-        );
+                entity.getSkipReason());
     }
 
     public ExerciseLogResponseDto toExerciseDto(ExerciseLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new ExerciseLogResponseDto(
                 entity.getId(),
                 entity.getEntryId(),
@@ -46,23 +47,23 @@ public class LogEntityMapper {
                 entity.getHours(),
                 MuscularGroup.valueOf(entity.getMuscleGroups()),
                 entity.getEnergyLevel(),
-                entity.getSkipReason()
-        );
+                entity.getSkipReason());
     }
 
     public NutritionLogResponseDto toNutritionDto(NutritionLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new NutritionLogResponseDto(
                 entity.getId(),
                 entity.getEntryId(),
                 NutritionRating.valueOf(entity.getRating()),
                 entity.getHasObservations(),
-                entity.getMetGoal()
-        );
+                entity.getMetGoal());
     }
 
     public MoodLogResponseDto toMoodDto(MoodLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new MoodLogResponseDto(
                 entity.getId(),
                 entity.getEntryId(),
@@ -70,12 +71,12 @@ public class LogEntityMapper {
                 entity.getHasObservations(),
                 entity.getEventDescription(),
                 entity.getSocialized(),
-                entity.getSocialWith()
-        );
+                entity.getSocialWith());
     }
 
     public SleepLogResponseDto toSleepDto(SleepLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new SleepLogResponseDto(
                 entity.getId(),
                 entity.getEntryId(),
@@ -83,20 +84,20 @@ public class LogEntityMapper {
                 SleepQuality.valueOf(entity.getQuality()),
                 entity.getNapped(),
                 entity.getNapHours(),
-                entity.getNapNeeded()
-        );
+                entity.getNapNeeded());
     }
 
     public PersonalLogResponseDto toPersonalDto(PersonalLogEntity entity) {
-        if (entity == null) return null;
+        if (entity == null)
+            return null;
         return new PersonalLogResponseDto(
                 entity.getId(),
                 entity.getHabitId(),
                 entity.getEntryId(),
+                null,
                 entity.getCompleted(),
                 entity.getHours(),
-                entity.getDescription()
-        );
+                entity.getDescription());
     }
 
     public DailyEntryWithLogsResult toResult(
