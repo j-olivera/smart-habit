@@ -1,100 +1,86 @@
-# Idea - Smart Habit 
+# Smart Habit Tracker
 
-## Objetivo
+**Smart Habit Tracker** es una aplicación integral diseñada para ayudar a los usuarios a registrar, monitorear y mejorar sus hábitos diarios mediante el uso de Inteligencia Artificial. A diferencia de los rastreadores convencionales, este sistema no solo registra si un hábito se cumplió o no, sino que analiza la calidad del sueño, la nutrición, el estado de ánimo, el estudio y el ejercicio para generar **reportes semanales con insights personalizados utilizando IA (Ollama)**.
 
-- Crear una aplicacion web que permita cargar los habitos semanales de un usuario, para al finalizar la semana realizar un reporte orquestado por IA, que permita al usuario conocer sus habitos, en que aspecto mejorar, marcar riesgos, hacer recomendaciones, etc. 
+---
 
-## Arquitectura
+## Objetivo del Proyecto
 
-### Frontend
+El objetivo principal es proporcionar una herramienta que entienda el contexto del usuario. Si un usuario no hizo ejercicio porque durmió mal y estuvo estresado, el sistema (a través de la IA) es capaz de correlacionar estos eventos y ofrecer recomendaciones accionables y empáticas para la semana siguiente, promoviendo un bienestar holístico y sostenible.
 
-- El frontend estara programado en Angular, utilizando TypeScript, HTML, TailwindCSS, y TypeScript. Conectandose atravez de una API REST con el backend.
+---
 
-### Backend
+## Arquitectura y Tecnologías
 
-- El backend estara programado con Java 21, utilizando Spring Boot como framework, y PostgreSQL como base de datos. Se conectara con el frontend atravez de una API REST.
+El proyecto está dividido en dos aplicaciones principales y sigue los principios de la **Clean Architecture** (Arquitectura Hexagonal) en el backend.
 
-### Lineamientos
+### Backend (Java / Spring Boot)
+- **Framework**: Spring Boot 3.x
+- **Lenguaje**: Java 21
+- **Arquitectura**: Hexagonal (Domain, Application, Infrastructure)
+- **Seguridad**: Spring Security con JWT (JSON Web Tokens) vía **HttpOnly Cookies** y Refresh Tokens.
+- **Base de Datos**: PostgreSQL
+- **Migraciones**: Flyway
+- **Inteligencia Artificial**: Integración con [Ollama](https://ollama.com/) (modelo `phi3`) usando Spring AI para la generación de reportes semanales.
 
-- El proyecto utilizara el patron S.O.L.I.D, y Clean Architecture.
-- Se utilizara Docker para el despliegue de la aplicacion.
-- Seguira el patron TDD.
-- Se utilizara Git para el control de versiones.
+### Frontend (Angular)
+- **Framework**: Angular 18 (Standalone Components)
+- **Lenguaje**: TypeScript
+- **Estilos**: Tailwind CSS
+- **Estado**: Angular Signals para reactividad y manejo de estado ligero.
+- **Seguridad**: Rutas protegidas mediante Guards Funcionales (`canActivateFn`).
 
-### Configuración y Setup
+---
 
-1. Clonar el repositorio.
-2. Crear un archivo `.env` en la raíz del proyecto basado en `.env.example`:
-```env
-# Base de Datos
-POSTGRES_DB=smarthabit
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=strong_password
+## Despliegue Rápido con Docker
 
-# Seguridad
-JWT_SECRET=super_secret_jwt_key_for_development
+El proyecto está dockerizado para facilitar su levantamiento en cualquier entorno. El archivo `docker-compose.yml` orquesta la base de datos, el backend, el frontend y el motor de IA (Ollama).
 
-# Inteligencia Artificial
-OLLAMA_MODEL=llama3
+### Requisitos Previos
+- Docker y Docker Compose instalados.
+- Puertos disponibles: `5432` (Postgres), `8080` (Backend), `4200` (Frontend), `11434` (Ollama).
+
+### Pasos para levantar el entorno
+
+1. **Clonar el repositorio y configurar variables:**
+   Crea un archivo `.env` en la raíz del proyecto basándote en el `.env.example` (si existe) o asegúrate de que las variables por defecto en el `docker-compose.yml` sean correctas.
+
+2. **Levantar los contenedores:**
+   Ejecuta el siguiente comando en la raíz del proyecto:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+3. **Descargar el modelo de Inteligencia Artificial (IMPORTANTE):**
+   El contenedor de Ollama se levanta vacío. Para que la IA funcione y genere los reportes semanales, debes descargar el modelo `phi3` dentro del contenedor. Ejecuta:
+   ```bash
+   docker exec -it smart-ollama ollama run phi3
+   ```
+   *(Este proceso puede tardar unos minutos dependiendo de tu conexión a internet).*
+
+4. **Acceder a la aplicación:**
+   - **Frontend**: http://localhost:4200
+   - **Backend API**: http://localhost:8080
+   - **Ollama API**: http://localhost:11434
+
+---
+
+## Seguridad y Autenticación
+
+El sistema implementa un robusto flujo de seguridad:
+- **HttpOnly Cookies**: Los tokens JWT nunca están accesibles vía JavaScript, mitigando ataques XSS.
+- **Refresh Tokens**: Permiten mantener la sesión del usuario viva de forma transparente sin requerir re-autenticación constante.
+- **Auth Guard**: El frontend protege las rutas privadas (`/app/*`) verificando el estado de la sesión antes de renderizar.
+
+---
+
+## Estructura del Proyecto
+
+```text
+smart-habit-project/
+├── smart-backend/        # API RESTful, lógica de negocio y conexión DB/IA
+├── smart-habit-frontend/ # Aplicación cliente, UI y consumo de API
+├── docs/                 # Documentación técnica y arquitectura de agentes
+├── docker-compose.yml    # Orquestador de contenedores
+└── README.md             # Este archivo
 ```
-3. Levantar la infraestructura completa con Docker: `docker compose up --build`
-
-### Dominio-Habito
-
-- Los Habitos seran los siguientes:
-    - Estudio -> ¿Si,no?(boolean)
-        - Si es si -> ¿Cuantas horas?(int), ¿Que estudio?(String)
-        - Si es no -> ¿Por que no?(String)
-    - Ejercicio -> ¿Si,no?(boolean)
-        - Si es si -> ¿Cuantas horas?(int), ¿Que grupos musculares?((ENUM)Pecho, Espalda, Piernas, Brazos, Abdomen, Cardio), ¿Como te sentiste de energia en el entrenamiento?(int 1-25, 25-50, 50-75, 75-100(%))
-        - Si es no -> ¿Por que no?(String)
-    - Alimentacion -> ¿Como consideras que fue tu alimentacion hoy?((ENUM)  Mala, Regular, Buena, Excelente)
-        - Observaciones -> ¿Si,no?(boolean)
-            - Si es si -> ¿Consideras que cumpliste con una buena alimentacion segun tu objetivo?(boolean)
-            - Si es no -> *pasa a la siguiente casilla
-    - Animo/Social -> ¿Como te sentiste hoy?((ENUM)  Mal, Decaido, Neutro, Feliz, Euforico)
-        - Observaciones -> ¿Si,no?(boolean)
-            - Si es si -> ¿Paso algo que hizo que tu dia este de esta manera?(String)
-            - Si es no -> *pasa a la siguiente casilla
-        - Socializaste -> ¿Si,no?(boolean)
-            - Si es si -> ¿Con quien socializaste?(String)
-            - Si es no -> *pasa a la siguiente casilla
-    - Sueño -> ¿Cuantas horas dormiste anoche?(float), ¿Que tan bien consideras que dormiste?((ENUM) Mal, Regular, Bien, Excelente)
-        - ¿Dormiste siesta? (boolean)
-            - Si es si -> ¿Cuantas horas dormiste siesta?(float), ¿Crees que era necesario?(boolean)
-            - Si es no -> *pasa a la siguiente casilla
-    
-        
-### Motor de la IA
-
-- El backend integrara un motor de IA que permita analizar los habitos del usuario y generar un reporte personalizado. 
-- Probaremos con Spring AI y Ollama, si no funciona, probaremos con otra alternativa.
-
-
-### Generador de reporte
-
-- El reporte se genera todos los domingos a las 23:59, mediante la funcion Scheduler de Spring Boot.
-- El reporte se enviara al correo electronico del usuario.
-
-### Identidad y autenticación
-
-- Utilizaremos un registro simple, nombre, correo y contraseña. Los datos se guardaran en la base de datos PostgreSQL. Mas detalles se veran en el backend 
-- El login se hara mediante correo y contraseña, y se generara un token JWT para la autenticación.
-- En el frontend tendremos un authservice el cual se conectara con el backend para el registro y login.
-
-### Interfaz de usuario
-
-- Se deja a criterio de la IA el diseño de la interfaz de usuario, pero debe seguir los lineamientos de S.O.L.I.D, y Clean Architecture.
-
-
-## Orden de features
-0. [feature] database-setup
-1. [feature] docker-setup
-2. [feature] user-register-backend
-3. [feature] user-login-backend 
-4. [feature] user-register-habit-daily-backend
-5. [feature] ia-report-generator-backend
-6. [feature] user-register-frontend
-7. [feature] user-login-frontend
-8. [feature] user-register-habit-daily-frontend
-9. [feature] ia-report-generator-frontend
