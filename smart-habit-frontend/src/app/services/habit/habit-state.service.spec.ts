@@ -26,7 +26,7 @@ const MOCK_FULL_ENTRY: DailyEntry = {
   studyLog: { id: 1, completed: true, hours: 2, subject: 'Math' },
   exerciseLog: { id: 2, completed: true, durationMinutes: 45, intensity: 'MEDIUM' },
   moodLog: { id: 3, completed: true, moodType: 'HAPPY' },
-  nutritionLog: { id: 4, completed: true, meals: ['Lunch'], waterLiters: 2 },
+  nutritionLog: { id: 4, completed: true, meals: ['Lunch'] },
   sleepLog: { id: 5, completed: true, hours: 8, quality: 'GOOD' },
   personalLogs: [
     { id: 10, habitId: 99, entryId: 1, completed: true, hours: 1, description: 'Read a book' }

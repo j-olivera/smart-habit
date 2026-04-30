@@ -104,7 +104,7 @@ export class HomeComponent {
   }
 
   onCtaClick(): void {
-    console.log('CTA clicked');
+    this.router.navigate(['/register']);
   }
 
   onApplySuggestion(suggestion: AISuggestion): void {

@@ -87,3 +87,5 @@ export class HabitModalComponent {
   }
 }
 
+// toca refactor de los modales, estan bien, pero no van con la logica del back
+// deja muchas funciones sin cumplir
