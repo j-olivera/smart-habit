@@ -76,14 +76,12 @@ class PromptBuilderTest {
                                                                 PersonalLogResponseDto.builder()
                                                                                 .habitId(10L)
                                                                                 .completed(true)
+                                                                                .habitName("Meditacion")
                                                                                 .description("Meditación matutina")
                                                                                 .build()))
                                                 .build());
 
                 // Mock para el nombre del hábito personal
-                HabitEntity mockHabit = new HabitEntity();
-                mockHabit.setName("Meditación");
-                when(habitRepositoryJpa.findById(10L)).thenReturn(Optional.of(mockHabit));
 
                 LocalDate weekStart = LocalDate.of(2026, 4, 20);
                 LocalDate weekEnd = LocalDate.of(2026, 4, 26);
@@ -99,7 +97,7 @@ class PromptBuilderTest {
                 assertTrue(prompt.contains("Alimentación: Buena — cumplió su objetivo nutricional"));
                 assertTrue(prompt.contains("Ánimo: Feliz — motivo: \"Gran día\" | Socializó con Familia"));
                 assertTrue(prompt.contains("Sueño: 7.5hs (Buena) + siesta 0.5hs"));
-                assertTrue(prompt.contains("Meditación: Completado (Meditación matutina)"));
+                assertTrue(prompt.contains("Meditacion: Completado (Meditación matutina)"));
 
                 // Verificar secciones del nuevo System Prompt
                 assertTrue(prompt.contains("## RESUMEN DE LA SEMANA"));
