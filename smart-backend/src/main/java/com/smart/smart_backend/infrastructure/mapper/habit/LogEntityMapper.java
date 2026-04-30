@@ -4,6 +4,7 @@ import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
 import com.smart.smart_backend.application.dto.habit.log.ExerciseLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.MoodLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.NutritionLogResponseDto;
+import com.smart.smart_backend.application.dto.habit.log.PersonalLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.SleepLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.StudyLogResponseDto;
 import com.smart.smart_backend.domain.enums.MoodLevel;
@@ -14,6 +15,7 @@ import com.smart.smart_backend.infrastructure.model.habit.DailyEntryEntity;
 import com.smart.smart_backend.infrastructure.model.habit.ExerciseLogEntity;
 import com.smart.smart_backend.infrastructure.model.habit.MoodLogEntity;
 import com.smart.smart_backend.infrastructure.model.habit.NutritionLogEntity;
+import com.smart.smart_backend.infrastructure.model.habit.PersonalLogEntity;
 import com.smart.smart_backend.infrastructure.model.habit.SleepLogEntity;
 import com.smart.smart_backend.infrastructure.model.habit.StudyLogEntity;
 import org.springframework.stereotype.Component;
@@ -85,22 +87,36 @@ public class LogEntityMapper {
         );
     }
 
+    public PersonalLogResponseDto toPersonalDto(PersonalLogEntity entity) {
+        if (entity == null) return null;
+        return new PersonalLogResponseDto(
+                entity.getId(),
+                entity.getHabitId(),
+                entity.getEntryId(),
+                entity.getCompleted(),
+                entity.getHours(),
+                entity.getDescription()
+        );
+    }
+
     public DailyEntryWithLogsResult toResult(
             DailyEntryEntity entry,
-            List<StudyLogResponseDto> studyLogs,
-            List<ExerciseLogResponseDto> exerciseLogs,
-            List<NutritionLogResponseDto> nutritionLogs,
-            List<MoodLogResponseDto> moodLogs,
-            List<SleepLogResponseDto> sleepLogs) {
+            StudyLogResponseDto studyLog,
+            ExerciseLogResponseDto exerciseLog,
+            NutritionLogResponseDto nutritionLog,
+            MoodLogResponseDto moodLog,
+            SleepLogResponseDto sleepLog,
+            List<PersonalLogResponseDto> personalLogs) {
         return DailyEntryWithLogsResult.builder()
                 .id(entry.getId())
                 .userId(entry.getUserId())
                 .date(entry.getDate())
-                .studyLogs(studyLogs)
-                .exerciseLogs(exerciseLogs)
-                .nutritionLogs(nutritionLogs)
-                .moodLogs(moodLogs)
-                .sleepLogs(sleepLogs)
+                .studyLog(studyLog)
+                .exerciseLog(exerciseLog)
+                .nutritionLog(nutritionLog)
+                .moodLog(moodLog)
+                .sleepLog(sleepLog)
+                .personalLogs(personalLogs)
                 .build();
     }
 }

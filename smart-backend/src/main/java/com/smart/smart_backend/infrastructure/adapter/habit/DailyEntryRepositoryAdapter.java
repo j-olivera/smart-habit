@@ -4,6 +4,7 @@ import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
 import com.smart.smart_backend.application.dto.habit.log.ExerciseLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.MoodLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.NutritionLogResponseDto;
+import com.smart.smart_backend.application.dto.habit.log.PersonalLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.SleepLogResponseDto;
 import com.smart.smart_backend.application.dto.habit.log.StudyLogResponseDto;
 import com.smart.smart_backend.application.port.out.habit.DailyEntryRepositoryPort;
@@ -30,6 +31,7 @@ public class DailyEntryRepositoryAdapter implements DailyEntryRepositoryPort, co
     private final JpaNutritionLogRepository jpaNutritionLogRepository;
     private final JpaMoodLogRepository jpaMoodLogRepository;
     private final JpaSleepLogRepository jpaSleepLogRepository;
+    private final JpaPersonalLogRepository jpaPersonalLogRepository;
 
     private final DailyEntryEntityMapper dailyEntryEntityMapper;
     private final LogEntityMapper logEntityMapper;
@@ -86,39 +88,51 @@ public class DailyEntryRepositoryAdapter implements DailyEntryRepositoryPort, co
                 .map(logEntityMapper::toSleepDto)
                 .collect(Collectors.groupingBy(SleepLogResponseDto::entryId));
 
-        return entries.stream().map(entry -> logEntityMapper.toResult(
+        var personalLogsMap = jpaPersonalLogRepository.findAllByEntryIdIn(entryIds).stream()
+                .map(logEntityMapper::toPersonalDto)
+                .collect(Collectors.groupingBy(PersonalLogResponseDto::entryId));
+
+        return entries.stream().map(entry -> {
+            Long id = entry.getId();
+            return logEntityMapper.toResult(
                 entry,
-                studyLogsMap.getOrDefault(entry.getId(), List.of()),
-                exerciseLogsMap.getOrDefault(entry.getId(), List.of()),
-                nutritionLogsMap.getOrDefault(entry.getId(), List.of()),
-                moodLogsMap.getOrDefault(entry.getId(), List.of()),
-                sleepLogsMap.getOrDefault(entry.getId(), List.of())
-        )).collect(Collectors.toList());
+                studyLogsMap.getOrDefault(id, List.of()).stream().findFirst().orElse(null),
+                exerciseLogsMap.getOrDefault(id, List.of()).stream().findFirst().orElse(null),
+                nutritionLogsMap.getOrDefault(id, List.of()).stream().findFirst().orElse(null),
+                moodLogsMap.getOrDefault(id, List.of()).stream().findFirst().orElse(null),
+                sleepLogsMap.getOrDefault(id, List.of()).stream().findFirst().orElse(null),
+                personalLogsMap.getOrDefault(id, List.of())
+            );
+        }).collect(Collectors.toList());
     }
 
     private DailyEntryWithLogsResult mapToResult(DailyEntryEntity entry) {
         Long entryId = entry.getId();
         
-        List<StudyLogResponseDto> studyLogs = jpaStudyLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+        StudyLogResponseDto studyLog = jpaStudyLogRepository.findByEntryId(entryId)
                 .map(logEntityMapper::toStudyDto)
-                .collect(Collectors.toList());
+                .orElse(null);
                 
-        List<ExerciseLogResponseDto> exerciseLogs = jpaExerciseLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+        ExerciseLogResponseDto exerciseLog = jpaExerciseLogRepository.findByEntryId(entryId)
                 .map(logEntityMapper::toExerciseDto)
-                .collect(Collectors.toList());
+                .orElse(null);
                 
-        List<NutritionLogResponseDto> nutritionLogs = jpaNutritionLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+        NutritionLogResponseDto nutritionLog = jpaNutritionLogRepository.findByEntryId(entryId)
                 .map(logEntityMapper::toNutritionDto)
-                .collect(Collectors.toList());
+                .orElse(null);
                 
-        List<MoodLogResponseDto> moodLogs = jpaMoodLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+        MoodLogResponseDto moodLog = jpaMoodLogRepository.findByEntryId(entryId)
                 .map(logEntityMapper::toMoodDto)
-                .collect(Collectors.toList());
+                .orElse(null);
                 
-        List<SleepLogResponseDto> sleepLogs = jpaSleepLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+        SleepLogResponseDto sleepLog = jpaSleepLogRepository.findByEntryId(entryId)
                 .map(logEntityMapper::toSleepDto)
+                .orElse(null);
+
+        List<PersonalLogResponseDto> personalLogs = jpaPersonalLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
+                .map(logEntityMapper::toPersonalDto)
                 .collect(Collectors.toList());
 
-        return logEntityMapper.toResult(entry, studyLogs, exerciseLogs, nutritionLogs, moodLogs, sleepLogs);
+        return logEntityMapper.toResult(entry, studyLog, exerciseLog, nutritionLog, moodLog, sleepLog, personalLogs);
     }
 }

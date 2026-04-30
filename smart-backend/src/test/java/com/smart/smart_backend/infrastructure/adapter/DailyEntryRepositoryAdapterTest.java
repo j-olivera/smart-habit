@@ -32,6 +32,7 @@ class DailyEntryRepositoryAdapterTest {
     @Mock private JpaNutritionLogRepository jpaNutritionLogRepository;
     @Mock private JpaMoodLogRepository jpaMoodLogRepository;
     @Mock private JpaSleepLogRepository jpaSleepLogRepository;
+    @Mock private JpaPersonalLogRepository jpaPersonalLogRepository;
 
     private DailyEntryRepositoryAdapter adapter;
     private LogEntityMapper logEntityMapper;
@@ -48,6 +49,7 @@ class DailyEntryRepositoryAdapterTest {
                 jpaNutritionLogRepository,
                 jpaMoodLogRepository,
                 jpaSleepLogRepository,
+                jpaPersonalLogRepository,
                 dailyEntryEntityMapper,
                 logEntityMapper
         );
@@ -83,6 +85,7 @@ class DailyEntryRepositoryAdapterTest {
         when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
 
         // Act
         List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
@@ -91,8 +94,8 @@ class DailyEntryRepositoryAdapterTest {
         assertThat(results).hasSize(1);
         DailyEntryWithLogsResult first = results.get(0);
         assertThat(first.id()).isEqualTo(100L);
-        assertThat(first.studyLogs()).hasSize(1);
-        assertThat(first.studyLogs().get(0).subject()).isEqualTo("Java");
+        assertThat(first.studyLog()).isNotNull();
+        assertThat(first.studyLog().subject()).isEqualTo("Java");
     }
 
     @Test
@@ -135,11 +138,12 @@ class DailyEntryRepositoryAdapterTest {
 
         when(jpaDailyEntryRepository.findByUserIdAndDate(userId, date))
                 .thenReturn(Optional.of(entryEntity));
-        when(jpaStudyLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of(studyLog));
-        when(jpaExerciseLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
-        when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
-        when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
-        when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaStudyLogRepository.findByEntryId(100L)).thenReturn(Optional.of(studyLog));
+        when(jpaExerciseLogRepository.findByEntryId(100L)).thenReturn(Optional.empty());
+        when(jpaNutritionLogRepository.findByEntryId(100L)).thenReturn(Optional.empty());
+        when(jpaMoodLogRepository.findByEntryId(100L)).thenReturn(Optional.empty());
+        when(jpaSleepLogRepository.findByEntryId(100L)).thenReturn(Optional.empty());
+        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
 
         // Act
         Optional<DailyEntryWithLogsResult> result = adapter.findByUserIdAndDateWithLogs(userId, date);
@@ -147,7 +151,7 @@ class DailyEntryRepositoryAdapterTest {
         // Assert
         assertThat(result).isPresent();
         assertThat(result.get().id()).isEqualTo(100L);
-        assertThat(result.get().studyLogs()).hasSize(1);
+        assertThat(result.get().studyLog()).isNotNull();
     }
 
     @Test
@@ -195,14 +199,15 @@ class DailyEntryRepositoryAdapterTest {
         when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
 
         // Act
         List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
 
         // Assert
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).studyLogs()).hasSize(1);
-        assertThat(results.get(0).exerciseLogs()).hasSize(1);
-        assertThat(results.get(1).studyLogs()).hasSize(1);
+        assertThat(results.get(0).studyLog()).isNotNull();
+        assertThat(results.get(0).exerciseLog()).isNotNull();
+        assertThat(results.get(1).studyLog()).isNotNull();
     }
 }

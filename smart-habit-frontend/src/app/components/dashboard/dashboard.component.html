@@ -1,0 +1,124 @@
+<div class="flex flex-col gap-8">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <p class="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-1">
+        {{ today }}
+      </p>
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">
+        Today's Habits
+      </h1>
+    </div>
+
+    <!-- Progress Pill -->
+    <div class="flex items-center gap-3 px-5 py-3 bg-zinc-900 border border-zinc-800 rounded-2xl self-start sm:self-auto">
+      <div class="relative w-9 h-9">
+        <svg class="w-9 h-9 -rotate-90" viewBox="0 0 36 36">
+          <circle cx="18" cy="18" r="14" fill="none" stroke="#27272a" stroke-width="3"/>
+          <circle
+            cx="18" cy="18" r="14" fill="none"
+            stroke="#a78bfa" stroke-width="3"
+            stroke-dasharray="87.96"
+            [attr.stroke-dashoffset]="progressOffset()"
+            class="transition-all duration-700 ease-out"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-violet-400">
+          {{ doneCount() }}/{{ totalCount() }}
+        </span>
+      </div>
+      <div>
+        <p class="text-xs text-zinc-500 font-medium">Progress</p>
+        <p class="text-sm font-bold text-white">{{ progressPercent() }}% complete</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (habitState.isLoading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="h-40 bg-zinc-900/60 border border-zinc-800/50 rounded-2xl animate-pulse"></div>
+      }
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (habitState.error() && !habitState.isLoading()) {
+    <div class="flex items-center gap-3 p-5 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400">
+      <span class="material-symbols-outlined">error</span>
+      <p class="text-sm font-medium">Failed to load habits. Please try again.</p>
+    </div>
+  }
+
+  <!-- Habit Grid -->
+  @if (!habitState.isLoading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+      @for (habit of habitState.habitsGrid(); track habit.type + habit.title) {
+        <button
+          (click)="openModal(habit)"
+          [disabled]="habit.status === 'done'"
+          class="group relative text-left p-6 rounded-2xl border transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 overflow-hidden"
+          [class.cursor-pointer]="habit.status === 'pending'"
+          [class.cursor-default]="habit.status === 'done'"
+          [class.bg-zinc-900]="habit.status === 'pending'"
+          [class.border-zinc-800]="habit.status === 'pending'"
+          [class.hover:border-zinc-600]="habit.status === 'pending'"
+          [class.hover:shadow-xl]="habit.status === 'pending'"
+          [class.bg-zinc-900/50]="habit.status === 'done'"
+          [class.border-zinc-800/50]="habit.status === 'done'"
+          [class.opacity-70]="habit.status === 'done'"
+        >
+          <!-- Glow on hover (pending only) -->
+          @if (habit.status === 'pending') {
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
+              [ngStyle]="{'background': 'radial-gradient(ellipse at 0% 0%, rgba(167,139,250,0.06) 0%, transparent 70%)'}">
+            </div>
+          }
+
+          <!-- Done Badge -->
+          @if (habit.status === 'done') {
+            <div class="absolute top-4 right-4 flex items-center gap-1 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+              <span class="material-symbols-outlined text-emerald-400" style="font-size:14px;">check_circle</span>
+              <span class="text-xs font-semibold text-emerald-400">Done</span>
+            </div>
+          }
+
+          <!-- Icon -->
+          <div class="mb-5">
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center border"
+              [class]="habit.bgClass">
+              <span class="material-symbols-outlined text-[22px]"
+                style="font-variation-settings: 'FILL' 1;"
+                [class]="habit.colorClass">{{ habit.icon }}</span>
+            </div>
+          </div>
+
+          <!-- Text -->
+          <div>
+            <h3 class="text-base font-bold text-white mb-1 tracking-tight">{{ habit.title }}</h3>
+            <p class="text-sm text-zinc-500 leading-relaxed">{{ habit.description }}</p>
+          </div>
+
+          <!-- Pending CTA Arrow -->
+          @if (habit.status === 'pending') {
+            <div class="absolute bottom-5 right-5 text-zinc-700 group-hover:text-zinc-400 group-hover:translate-x-0.5 transition-all duration-200">
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </div>
+          }
+        </button>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Habit Modal -->
+<app-habit-modal
+  [isOpen]="isModalOpen"
+  [habitType]="selectedHabitType"
+  [habitTitle]="selectedHabitTitle"
+  (close)="closeModal()"
+/>

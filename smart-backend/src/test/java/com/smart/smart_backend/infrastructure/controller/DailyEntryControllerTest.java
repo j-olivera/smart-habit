@@ -69,11 +69,12 @@ class DailyEntryControllerTest {
                 .id(100L)
                 .userId(1L)
                 .date(date)
-                .studyLogs(List.of())
-                .exerciseLogs(List.of())
-                .nutritionLogs(List.of())
-                .moodLogs(List.of())
-                .sleepLogs(List.of())
+                .studyLog(null)
+                .exerciseLog(null)
+                .nutritionLog(null)
+                .moodLog(null)
+                .sleepLog(null)
+                .personalLogs(List.of())
                 .build();
 
         when(getDailyEntryUseCase.execute(1L, date)).thenReturn(response);

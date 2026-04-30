@@ -17,4 +17,23 @@ export const routes: Routes = [
     path: 'login',
     loadComponent: () => import('./components/auth/login/login.component').then((m) => m.LoginComponent),
   },
+  {
+    path: 'app',
+    loadComponent: () => import('./components/layout/dashboard-layout/dashboard-layout.component').then((m) => m.DashboardLayoutComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      },
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
 ];

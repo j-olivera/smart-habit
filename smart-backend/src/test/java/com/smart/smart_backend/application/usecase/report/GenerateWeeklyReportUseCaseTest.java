@@ -73,31 +73,34 @@ class GenerateWeeklyReportUseCaseTest {
                         .id(1L)
                         .userId(userId)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(1L).studied(true).hours(2.0f).subject("Java").build()))
-                        .exerciseLogs(List.of(ExerciseLogResponseDto.builder()
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .exerciseLog(ExerciseLogResponseDto.builder()
                                 .id(1L).exercised(true).hours(1.0f)
-                                .muscularGroup(MuscularGroup.CHEST).energyLevel(80).build()))
-                        .nutritionLogs(List.of(NutritionLogResponseDto.builder()
-                                .id(1L).rating(NutritionRating.GOOD).metGoal(true).build()))
-                        .moodLogs(List.of(MoodLogResponseDto.builder()
-                                .id(1L).mood(MoodLevel.HAPPY).build()))
-                        .sleepLogs(List.of(SleepLogResponseDto.builder()
-                                .id(1L).hours(7.5f).quality(SleepQuality.GOOD).napped(false).build()))
+                                .muscularGroup(MuscularGroup.CHEST).energyLevel(80).build())
+                        .nutritionLog(NutritionLogResponseDto.builder()
+                                .id(1L).rating(NutritionRating.GOOD).metGoal(true).build())
+                        .moodLog(MoodLogResponseDto.builder()
+                                .id(1L).mood(MoodLevel.HAPPY).build())
+                        .sleepLog(SleepLogResponseDto.builder()
+                                .id(1L).hours(7.5f).quality(SleepQuality.GOOD).napped(false).build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(2L)
                         .userId(userId)
                         .date(LocalDate.of(2026, 4, 22))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(2L).studied(true).hours(3.0f).subject("Python").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(3L)
                         .userId(userId)
                         .date(LocalDate.of(2026, 4, 23))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(3L).studied(false).skipReason("descanso").build()))
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(3L).studied(false).skipReason("descanso").build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -144,6 +147,7 @@ class GenerateWeeklyReportUseCaseTest {
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -181,27 +185,30 @@ class GenerateWeeklyReportUseCaseTest {
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(1L).studied(true).hours(2.0f).subject("Java").build()))
-                        .exerciseLogs(List.of(ExerciseLogResponseDto.builder()
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .exerciseLog(ExerciseLogResponseDto.builder()
                                 .id(1L).exercised(true).hours(1.0f)
-                                .muscularGroup(MuscularGroup.CHEST).energyLevel(80).build()))
-                        .nutritionLogs(List.of(NutritionLogResponseDto.builder()
-                                .id(1L).rating(NutritionRating.GOOD).metGoal(true).build()))
-                        .moodLogs(List.of(MoodLogResponseDto.builder()
-                                .id(1L).mood(MoodLevel.HAPPY).build()))
-                        .sleepLogs(List.of(SleepLogResponseDto.builder()
-                                .id(1L).hours(7.5f).quality(SleepQuality.GOOD).napped(false).build()))
+                                .muscularGroup(MuscularGroup.CHEST).energyLevel(80).build())
+                        .nutritionLog(NutritionLogResponseDto.builder()
+                                .id(1L).rating(NutritionRating.GOOD).metGoal(true).build())
+                        .moodLog(MoodLogResponseDto.builder()
+                                .id(1L).mood(MoodLevel.HAPPY).build())
+                        .sleepLog(SleepLogResponseDto.builder()
+                                .id(1L).hours(7.5f).quality(SleepQuality.GOOD).napped(false).build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(2L).studied(true).hours(3.0f).subject("Python").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
-                                .id(3L).studied(false).skipReason("cansado").build()))
+                        .studyLog(StudyLogResponseDto.builder()
+                                .id(3L).studied(false).skipReason("cansado").build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -237,15 +244,18 @@ class GenerateWeeklyReportUseCaseTest {
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -277,15 +287,18 @@ class GenerateWeeklyReportUseCaseTest {
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -322,15 +335,18 @@ class GenerateWeeklyReportUseCaseTest {
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L).userId(userId).date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(2L).userId(userId).date(LocalDate.of(2026, 4, 22))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(2L).studied(true).hours(3.0f).subject("Python").build())
+                        .personalLogs(List.of())
                         .build(),
                 DailyEntryWithLogsResult.builder()
                         .id(3L).userId(userId).date(LocalDate.of(2026, 4, 23))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(3L).studied(true).hours(1.5f).subject("Go").build())
+                        .personalLogs(List.of())
                         .build()
         );
 

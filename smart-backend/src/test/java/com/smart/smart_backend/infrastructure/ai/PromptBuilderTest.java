@@ -35,34 +35,35 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
+                        .studyLog(StudyLogResponseDto.builder()
                                 .id(1L)
                                 .studied(true)
                                 .hours(2.0f)
                                 .subject("Java")
-                                .build()))
-                        .exerciseLogs(List.of(ExerciseLogResponseDto.builder()
+                                .build())
+                        .exerciseLog(ExerciseLogResponseDto.builder()
                                 .id(1L)
                                 .exercised(true)
                                 .hours(1.0f)
                                 .muscularGroup(MuscularGroup.CHEST)
                                 .energyLevel(80)
-                                .build()))
-                        .nutritionLogs(List.of(NutritionLogResponseDto.builder()
+                                .build())
+                        .nutritionLog(NutritionLogResponseDto.builder()
                                 .id(1L)
                                 .rating(NutritionRating.GOOD)
                                 .metGoal(true)
-                                .build()))
-                        .moodLogs(List.of(MoodLogResponseDto.builder()
+                                .build())
+                        .moodLog(MoodLogResponseDto.builder()
                                 .id(1L)
                                 .mood(MoodLevel.HAPPY)
-                                .build()))
-                        .sleepLogs(List.of(SleepLogResponseDto.builder()
+                                .build())
+                        .sleepLog(SleepLogResponseDto.builder()
                                 .id(1L)
                                 .hours(7.5f)
                                 .quality(SleepQuality.GOOD)
                                 .napped(false)
-                                .build()))
+                                .build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -96,19 +97,20 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder()
+                        .studyLog(StudyLogResponseDto.builder()
                                 .id(1L)
                                 .studied(false)
                                 .skipReason("cansado")
-                                .build()))
-                        .exerciseLogs(List.of(ExerciseLogResponseDto.builder()
+                                .build())
+                        .exerciseLog(ExerciseLogResponseDto.builder()
                                 .id(1L)
                                 .exercised(false)
                                 .skipReason("dolor muscular")
-                                .build()))
-                        .nutritionLogs(List.of())
-                        .moodLogs(List.of())
-                        .sleepLogs(List.of())
+                                .build())
+                        .nutritionLog(null)
+                        .moodLog(null)
+                        .sleepLog(null)
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -131,11 +133,12 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of())
-                        .exerciseLogs(List.of())
-                        .nutritionLogs(List.of())
-                        .moodLogs(List.of())
-                        .sleepLogs(List.of())
+                        .studyLog(null)
+                        .exerciseLog(null)
+                        .nutritionLog(null)
+                        .moodLog(null)
+                        .sleepLog(null)
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -158,13 +161,14 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .sleepLogs(List.of(SleepLogResponseDto.builder()
+                        .sleepLog(SleepLogResponseDto.builder()
                                 .id(1L)
                                 .hours(6.0f)
                                 .quality(SleepQuality.REGULAR)
                                 .napped(true)
                                 .napHours(1.0f)
-                                .build()))
+                                .build())
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -186,11 +190,12 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(null)
-                        .exerciseLogs(List.of())
-                        .nutritionLogs(List.of())
-                        .moodLogs(List.of())
-                        .sleepLogs(List.of())
+                        .studyLog(null)
+                        .exerciseLog(null)
+                        .nutritionLog(null)
+                        .moodLog(null)
+                        .sleepLog(null)
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -214,11 +219,12 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of())
-                        .exerciseLogs(null)
-                        .nutritionLogs(List.of())
-                        .moodLogs(List.of())
-                        .sleepLogs(List.of())
+                        .studyLog(null)
+                        .exerciseLog(null)
+                        .nutritionLog(null)
+                        .moodLog(null)
+                        .sleepLog(null)
+                        .personalLogs(List.of())
                         .build()
         );
 
@@ -235,27 +241,25 @@ class PromptBuilderTest {
     }
 
     @Test
-    void shouldHandleMultipleLogsPerCategory() {
-        // Given - múltiples ejercicios en un día
+    void shouldHandleMultiplePersonalLogs() {
+        // Given
         List<DailyEntryWithLogsResult> entries = List.of(
                 DailyEntryWithLogsResult.builder()
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .exerciseLogs(List.of(
-                                ExerciseLogResponseDto.builder()
+                        .personalLogs(List.of(
+                                com.smart.smart_backend.application.dto.habit.log.PersonalLogResponseDto.builder()
                                         .id(1L)
-                                        .exercised(true)
+                                        .habitId(10L)
+                                        .completed(true)
                                         .hours(1.0f)
-                                        .muscularGroup(MuscularGroup.CHEST)
-                                        .energyLevel(80)
                                         .build(),
-                                ExerciseLogResponseDto.builder()
+                                com.smart.smart_backend.application.dto.habit.log.PersonalLogResponseDto.builder()
                                         .id(2L)
-                                        .exercised(true)
-                                        .hours(0.5f)
-                                        .muscularGroup(MuscularGroup.LEGS)
-                                        .energyLevel(60)
+                                        .habitId(11L)
+                                        .completed(false)
+                                        .description("mañana sí")
                                         .build()
                         ))
                         .build()
@@ -269,8 +273,8 @@ class PromptBuilderTest {
 
         // Then
         assertNotNull(prompt);
-        assertTrue(prompt.contains("CHEST"));
-        assertTrue(prompt.contains("LEGS"));
+        assertTrue(prompt.contains("Hábito Personal (ID 10): Completado — 1.0hs"));
+        assertTrue(prompt.contains("Hábito Personal (ID 11): Pendiente (mañana sí)"));
     }
 
     @Test
@@ -281,7 +285,8 @@ class PromptBuilderTest {
                         .id(1L)
                         .userId(1L)
                         .date(LocalDate.of(2026, 4, 21))
-                        .studyLogs(List.of(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build()))
+                        .studyLog(StudyLogResponseDto.builder().id(1L).studied(true).hours(2.0f).subject("Java").build())
+                        .personalLogs(List.of())
                         .build()
         );
 
