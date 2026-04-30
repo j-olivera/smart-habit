@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, throwError, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, RegisterRequest, TokenResponse, UserResponse, MessageResponse } from '../../models/auth/auth.model';
 import { HandleError } from '../../models/error/handleError.model';
@@ -23,7 +23,10 @@ export class AuthService {
   login(request: LoginRequest): Observable<TokenResponse> {
     return this.http.post<TokenResponse>(`${this.baseUrl}/login`, request, {
       withCredentials: true
-    }).pipe(catchError(this.handleError));
+    }).pipe(
+      tap(() => localStorage.setItem('isLoggedIn', 'true')),
+      catchError(this.handleError)
+    );
   }
 
   refresh(): Observable<TokenResponse> {
@@ -32,10 +35,22 @@ export class AuthService {
     }).pipe(catchError(this.handleError));
   }
 
-  logout(): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(`${this.baseUrl}/logout`, {}, {
+  logout(): void {
+    this.http.post<MessageResponse>(`${this.baseUrl}/logout`, {}, {
       withCredentials: true
-    }).pipe(catchError(this.handleError));
+    }).subscribe({
+      next: () => {
+        // Limpiamos todo al salir
+        localStorage.removeItem('isLoggedIn');
+        this.currentUser.set(null);
+        window.location.href = '/login'; // Redirección dura para limpiar estados
+      },
+      error: () => {
+        // Incluso si el server falla, limpiamos el front por seguridad
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = '/login';
+      }
+    });
   }
   private handleError(error: HttpErrorResponse): Observable<never> {
     let appError: HandleError = { code: 'UNKNOW_ERROR' };

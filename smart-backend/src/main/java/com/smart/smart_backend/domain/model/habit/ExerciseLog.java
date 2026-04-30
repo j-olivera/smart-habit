@@ -25,7 +25,7 @@ public class ExerciseLog {
     public static ExerciseLog create(Long entryId, boolean exercised, Float hours,
             MuscularGroup muscularGroup, Integer energyLevel, String skipReason) {
         if (exercised) {
-            if (hours == null || hours < 0.1 || hours > 12)
+            if (hours == null || hours < 0.1 || hours > 4)
                 throw new IllegalArgumentException("Si entrenó, hours debe estar entre 0.1 y 12");
             if (muscularGroup == null)
                 throw new IllegalArgumentException("Si entrenó, muscularGroup es obligatorio");

@@ -1,35 +1,48 @@
 export interface StudyLog {
   id: number;
-  completed: boolean;
-  hours: number;
-  subject: string;
+  entryId: number;
+  studied: boolean; //de este dependen que esten los demas valores
+  hours?: number;
+  subject?: string;
+  skipReason?: string;
 }
 
 export interface ExerciseLog {
   id: number;
-  completed: boolean;
-  durationMinutes?: number;
-  intensity?: 'LOW' | 'MEDIUM' | 'HIGH';
+  entryId: number;
+  exercised: boolean; //de este dependen que esten los demas valores
+  hours?: number;
+  muscularGroup?: 'CHEST' | 'BACK' | 'LEGS' | 'ARMS' | 'ABDOMEN' | 'CARDIO';
+  energyLevel?: number;
+  skipReason?: string;
 }
 
 export interface MoodLog {
   id: number;
-  completed: boolean;
-  moodType: 'HAPPY' | 'SAD' | 'NEUTRAL' | 'STRESSED' | 'ANXIOUS' | 'ENERGETIC';
-  note?: string;
+  entryId: number;
+  mood: 'SAD' | 'DOWN' | 'NEUTRAL' | 'HAPPY' | 'EUPHORIC';
+  hasObservations: boolean;
+  eventDescription?: string;
+  socialized: boolean;
+  socialWith?: string;
 }
 
 export interface NutritionLog {
   id: number;
-  completed: boolean;
-  meals: string[];
+  entryId: number;
+  rating: 'POOR' | 'REGULAR' | 'GOOD' | 'EXCELLENT'; //de este dependen que esten los demas valores
+  hasObservation: boolean;
+  metGoal?: boolean;
 }
 
 export interface SleepLog {
   id: number;
-  completed: boolean;
+  entryId: number;
   hours: number;
-  quality: 'POOR' | 'FAIR' | 'GOOD' | 'EXCELLENT';
+  quality: 'BAD' | 'REGULAR' | 'GOOD' | 'EXCELLENT';
+  napped: boolean; //de este dependen que esten los demas valores
+  napHours?: number;
+  napNeeded?: boolean;
 }
 
 export interface PersonalLog {

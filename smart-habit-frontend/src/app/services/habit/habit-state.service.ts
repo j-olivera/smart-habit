@@ -142,10 +142,6 @@ export class HabitStateService {
     const endpoint = type.toLowerCase();
     const payload = { ...data, entryId };
 
-    // Flags requeridos por los DTOs de Java para marcar completitud
-    if (type === 'STUDY') payload.studied = true;
-    if (type === 'EXERCISE') payload.exercised = true;
-
     this.http.post<any>(`${this.LOGS_API_URL}/${endpoint}`, payload).subscribe({
       next: (savedLog) => {
         // Actualizamos solo la parte del estado que cambió (Optimistic-ish update)
