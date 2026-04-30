@@ -24,7 +24,7 @@ El proyecto está dividido en dos aplicaciones principales y sigue los principio
 - **Inteligencia Artificial**: Integración con [Ollama](https://ollama.com/) (modelo `phi3`) usando Spring AI para la generación de reportes semanales.
 
 ### Frontend (Angular)
-- **Framework**: Angular 18 (Standalone Components)
+- **Framework**: Angular 21 (Standalone Components)
 - **Lenguaje**: TypeScript
 - **Estilos**: Tailwind CSS
 - **Estado**: Angular Signals para reactividad y manejo de estado ligero.
