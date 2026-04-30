@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface RefreshTokenEntityMapper {
-    
+
     @Mapping(target = "userId", source = "user.id")
     RefreshToken toDomain(RefreshTokenEntity entity);
 
