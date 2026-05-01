@@ -3,8 +3,6 @@ package com.smart.smart_backend.application.usecase.habit;
 import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
 import com.smart.smart_backend.application.port.in.habit.GetDailyEntryUseCase;
 import com.smart.smart_backend.application.port.out.habit.DailyEntryRepositoryPort;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 

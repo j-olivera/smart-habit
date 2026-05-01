@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +41,7 @@ class HabitQueryUseCasesTest {
                 .userId(userId)
                 .date(date)
                 .build();
-        
+
         when(dailyEntryRepositoryPort.findByUserIdAndDateWithLogs(userId, date))
                 .thenReturn(Optional.of(expectedResult));
 
@@ -79,7 +78,7 @@ class HabitQueryUseCasesTest {
         LocalDate expectedSunday = LocalDate.of(2026, 4, 26);
 
         DailyEntryWithLogsResult entry1 = DailyEntryWithLogsResult.builder().date(expectedMonday).build();
-        
+
         when(dailyEntryRepositoryPort.findWeeklyEntriesWithLogs(userId, expectedMonday, expectedSunday))
                 .thenReturn(List.of(entry1));
 

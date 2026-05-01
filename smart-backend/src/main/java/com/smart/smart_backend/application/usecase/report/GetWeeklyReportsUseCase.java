@@ -6,7 +6,6 @@ import com.smart.smart_backend.application.port.out.report.WeeklyReportRepositor
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class GetWeeklyReportsUseCase implements GetWeeklyReportsPort {
@@ -16,7 +15,8 @@ public class GetWeeklyReportsUseCase implements GetWeeklyReportsPort {
     @Override
     public List<WeeklyReportSummary> execute(Long userId) {
         // Optimización: Usamos el método de proyección del repositorio.
-        // Esto evita traer la columna 'ai_content' (TEXT) de todos los registros a la RAM.
+        // Esto evita traer la columna 'ai_content' (TEXT) de todos los registros a la
+        // RAM.
         return reportRepo.findSummariesByUserId(userId);
     }
 }

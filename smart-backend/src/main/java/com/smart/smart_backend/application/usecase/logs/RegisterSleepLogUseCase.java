@@ -4,10 +4,8 @@ import com.smart.smart_backend.application.dto.habit.log.SleepLogRequestDto;
 import com.smart.smart_backend.application.dto.habit.log.SleepLogResponseDto;
 import com.smart.smart_backend.application.mapper.logs.SleepLogMapper;
 import com.smart.smart_backend.application.port.in.logs.RegisterSleepLog;
-import com.smart.smart_backend.application.port.out.habit.HabitRepositoryPort;
 import com.smart.smart_backend.application.port.out.logs.SleepLogRepositoryPort;
 import com.smart.smart_backend.application.port.out.register.DailyEntryRepositoryPort;
-import com.smart.smart_backend.domain.exception.DuplicateHabitLogException;
 import com.smart.smart_backend.domain.exception.EntryNotFoundException;
 import com.smart.smart_backend.domain.model.habit.SleepLog;
 
@@ -16,7 +14,8 @@ public class RegisterSleepLogUseCase implements RegisterSleepLog {
     private final DailyEntryRepositoryPort dailyEntryRepositoryPort;
     private final SleepLogRepositoryPort sleepLogRepositoryPort;
 
-    public RegisterSleepLogUseCase(DailyEntryRepositoryPort dailyEntryRepositoryPort, SleepLogRepositoryPort sleepLogRepositoryPort) {
+    public RegisterSleepLogUseCase(DailyEntryRepositoryPort dailyEntryRepositoryPort,
+            SleepLogRepositoryPort sleepLogRepositoryPort) {
         this.dailyEntryRepositoryPort = dailyEntryRepositoryPort;
         this.sleepLogRepositoryPort = sleepLogRepositoryPort;
     }
@@ -33,8 +32,7 @@ public class RegisterSleepLogUseCase implements RegisterSleepLog {
                         requestDto.quality(),
                         requestDto.napped(),
                         requestDto.napHours(),
-                        requestDto.napNeeded()
-                ))
+                        requestDto.napNeeded()))
                 .orElseGet(() -> SleepLog.create(
                         requestDto.entryId(),
                         requestDto.hours(),

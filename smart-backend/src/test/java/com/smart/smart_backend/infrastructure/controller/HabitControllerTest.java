@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -39,16 +38,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ SecurityConfig.class, JwtAuthenticationFilter.class })
 class HabitControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @MockBean private CreateHabit createHabitUseCase;
-    @MockBean private GetUserHabits getUserHabitsUseCase;
-    @MockBean private DesactivateHabit desactivateHabitUseCase;
-    
+    @MockBean
+    private CreateHabit createHabitUseCase;
+    @MockBean
+    private GetUserHabits getUserHabitsUseCase;
+    @MockBean
+    private DesactivateHabit desactivateHabitUseCase;
+
     // Security Mocks needed by JwtAuthenticationFilter
-    @MockBean private JwtProviderPort jwtProviderPort;
-    @MockBean private UserRepositoryPort userRepositoryPort;
+    @MockBean
+    private JwtProviderPort jwtProviderPort;
+    @MockBean
+    private UserRepositoryPort userRepositoryPort;
 
     private User mockUser;
 
@@ -71,8 +77,9 @@ class HabitControllerTest {
     @Test
     void shouldCreateHabit() throws Exception {
         HabitRequestDto request = new HabitRequestDto("Run", HabitType.EXERCISE, "Daily run");
-        HabitResponseDto response = new HabitResponseDto(10L, 1L, "Run", HabitType.EXERCISE, "Daily run", true, Instant.now());
-        
+        HabitResponseDto response = new HabitResponseDto(10L, 1L, "Run", HabitType.EXERCISE, "Daily run", true,
+                Instant.now());
+
         when(createHabitUseCase.execute(any(HabitRequestDto.class), eq(1L))).thenReturn(response);
 
         mockMvc.perform(post("/api/habits")

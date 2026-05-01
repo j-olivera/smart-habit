@@ -7,8 +7,6 @@ import com.smart.smart_backend.domain.enums.MuscularGroup;
 import com.smart.smart_backend.domain.enums.NutritionRating;
 import com.smart.smart_backend.domain.enums.SleepQuality;
 import com.smart.smart_backend.infrastructure.repository.habit.JpaHabitRepository;
-import com.smart.smart_backend.infrastructure.model.habit.HabitEntity;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,10 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PromptBuilderTest {

@@ -1,6 +1,5 @@
 package com.smart.smart_backend.infrastructure.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
 import com.smart.smart_backend.application.dto.habit.WeeklyEntriesReportDto;
 import com.smart.smart_backend.application.port.in.habit.GetDailyEntryUseCase;
@@ -35,71 +34,77 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ SecurityConfig.class, JwtAuthenticationFilter.class })
 class DailyEntryControllerTest {
 
-    @Autowired private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean private CreateDailyEntry createDailyEntryUseCase;
-    @MockBean private GetDailyEntryUseCase getDailyEntryUseCase;
-    @MockBean private GetWeeklyEntriesUseCase getWeeklyEntriesUseCase;
+        @MockBean
+        private CreateDailyEntry createDailyEntryUseCase;
+        @MockBean
+        private GetDailyEntryUseCase getDailyEntryUseCase;
+        @MockBean
+        private GetWeeklyEntriesUseCase getWeeklyEntriesUseCase;
 
-    // Security Mocks
-    @MockBean private JwtProviderPort jwtProviderPort;
-    @MockBean private UserRepositoryPort userRepositoryPort;
+        // Security Mocks
+        @MockBean
+        private JwtProviderPort jwtProviderPort;
+        @MockBean
+        private UserRepositoryPort userRepositoryPort;
 
-    private User mockUser;
+        private User mockUser;
 
-    @BeforeEach
-    void setUp() {
-        mockUser = User.builder()
-                .id(1L)
-                .name("Test User")
-                .email("test@test.com")
-                .role("USER")
-                .active(true)
-                .build();
+        @BeforeEach
+        void setUp() {
+                mockUser = User.builder()
+                                .id(1L)
+                                .name("Test User")
+                                .email("test@test.com")
+                                .role("USER")
+                                .active(true)
+                                .build();
 
-        var authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        var auth = new UsernamePasswordAuthenticationToken(mockUser, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-    }
+                var authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+                var auth = new UsernamePasswordAuthenticationToken(mockUser, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+        }
 
-    @Test
-    void shouldGetEntryByDate() throws Exception {
-        LocalDate date = LocalDate.of(2026, 4, 24);
-        DailyEntryWithLogsResult response = DailyEntryWithLogsResult.builder()
-                .id(100L)
-                .userId(1L)
-                .date(date)
-                .studyLog(null)
-                .exerciseLog(null)
-                .nutritionLog(null)
-                .moodLog(null)
-                .sleepLog(null)
-                .personalLogs(List.of())
-                .build();
+        @Test
+        void shouldGetEntryByDate() throws Exception {
+                LocalDate date = LocalDate.of(2026, 4, 24);
+                DailyEntryWithLogsResult response = DailyEntryWithLogsResult.builder()
+                                .id(100L)
+                                .userId(1L)
+                                .date(date)
+                                .studyLog(null)
+                                .exerciseLog(null)
+                                .nutritionLog(null)
+                                .moodLog(null)
+                                .sleepLog(null)
+                                .personalLogs(List.of())
+                                .build();
 
-        when(getDailyEntryUseCase.execute(1L, date)).thenReturn(response);
+                when(getDailyEntryUseCase.execute(1L, date)).thenReturn(response);
 
-        mockMvc.perform(get("/api/daily-entries/2026-04-24"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(100L))
-                .andExpect(jsonPath("$.date").value("2026-04-24"));
-    }
+                mockMvc.perform(get("/api/daily-entries/2026-04-24"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(100L))
+                                .andExpect(jsonPath("$.date").value("2026-04-24"));
+        }
 
-    @Test
-    void shouldGetWeeklyReport() throws Exception {
-        LocalDate start = LocalDate.of(2026, 4, 20);
-        WeeklyEntriesReportDto response = WeeklyEntriesReportDto.builder()
-                .userId(1L)
-                .weekStart(start)
-                .weekEnd(start.plusDays(6))
-                .dailyEntries(List.of())
-                .build();
+        @Test
+        void shouldGetWeeklyReport() throws Exception {
+                LocalDate start = LocalDate.of(2026, 4, 20);
+                WeeklyEntriesReportDto response = WeeklyEntriesReportDto.builder()
+                                .userId(1L)
+                                .weekStart(start)
+                                .weekEnd(start.plusDays(6))
+                                .dailyEntries(List.of())
+                                .build();
 
-        when(getWeeklyEntriesUseCase.execute(eq(1L), any(LocalDate.class))).thenReturn(response);
+                when(getWeeklyEntriesUseCase.execute(eq(1L), any(LocalDate.class))).thenReturn(response);
 
-        mockMvc.perform(get("/api/daily-entries/weekly")
-                .param("weekStart", "2026-04-20"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.weekStart").value("2026-04-20"));
-    }
+                mockMvc.perform(get("/api/daily-entries/weekly")
+                                .param("weekStart", "2026-04-20"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.weekStart").value("2026-04-20"));
+        }
 }
