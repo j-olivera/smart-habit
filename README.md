@@ -84,3 +84,14 @@ smart-habit-project/
 ├── docker-compose.yml    # Orquestador de contenedores
 └── README.md             # Este archivo
 ```
+
+
+
+Falta el Hábito Personalizado: Adentro de src/app/components/dashboard/habit-modal/forms están creados los cinco formularios fijos:
+
+exercise-form.component.ts
+mood-form.component.ts
+nutrition-form.component.ts
+sleep-form.component.ts
+study-form.component.ts Pero no existe ningún personal-form.component.ts ni nada similar para que el usuario pueda escribir su propio título y detalle.
+Falta la página de Reportes: En el SidebarComponent tenés el link ruteado hacia /app/reports. Sin embargo, si buscás en todo el proyecto, no existe ningún componente, carpeta ni archivo relacionado con los reportes. El enlace del menú te va a tirar a una pantalla en blanco o te va a redirigir al dashboard porque la ruta está huérfana.
