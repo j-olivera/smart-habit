@@ -15,8 +15,8 @@ public class GetWeeklyReportsUseCase implements GetWeeklyReportsPort {
 
     @Override
     public List<WeeklyReportSummary> execute(Long userId) {
-        return reportRepo.findAllByUserIdOrderByWeekStartDesc(userId).stream()
-                .map(WeeklyReportSummary::from)
-                .collect(Collectors.toList());
+        // Optimización: Usamos el método de proyección del repositorio.
+        // Esto evita traer la columna 'ai_content' (TEXT) de todos los registros a la RAM.
+        return reportRepo.findSummariesByUserId(userId);
     }
 }

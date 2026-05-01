@@ -1,5 +1,6 @@
 package com.smart.smart_backend.infrastructure.adapter.report;
 
+import com.smart.smart_backend.application.dto.report.WeeklyReportSummary;
 import com.smart.smart_backend.application.port.out.report.WeeklyReportRepositoryPort;
 import com.smart.smart_backend.domain.model.report.WeeklyReport;
 import com.smart.smart_backend.infrastructure.model.report.WeeklyReportJpaEntity;
@@ -10,7 +11,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort {
@@ -35,10 +35,16 @@ public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort
     }
 
     @Override
-    public List<WeeklyReport> findAllByUserIdOrderByWeekStartDesc(Long userId) {
-        return repository.findByUserIdOrderByWeekStartDesc(userId).stream()
-                .map(this::toDomain)
-                .collect(Collectors.toList());
+    public List<WeeklyReportSummary> findSummariesByUserId(Long userId) {
+        // Delegamos la proyección directamente a la DB para mayor eficiencia
+        return repository.findSummariesByUserId(userId);
+    }
+
+    @Override
+    public Optional<WeeklyReport> findByIdAndUserId(Long id, Long userId) {
+        // Búsqueda directa indexada, mucho más rápida que filtrar en memoria
+        return repository.findByIdAndUserId(id, userId)
+                .map(this::toDomain);
     }
 
     private WeeklyReport toDomain(WeeklyReportJpaEntity entity) {
@@ -48,8 +54,7 @@ public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort
                 entity.getWeekStart(),
                 entity.getWeekEnd(),
                 entity.getAiContent(),
-                entity.getGeneratedAt()
-        );
+                entity.getGeneratedAt());
     }
 
     private WeeklyReportJpaEntity toEntity(WeeklyReport report) {
@@ -59,15 +64,13 @@ public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort
                     report.getWeekStart(),
                     report.getWeekEnd(),
                     report.getAiContent(),
-                    report.getGeneratedAt() != null ? report.getGeneratedAt() : Instant.now()
-            );
+                    report.getGeneratedAt() != null ? report.getGeneratedAt() : Instant.now());
         }
         return new WeeklyReportJpaEntity(
                 report.getUserId(),
                 report.getWeekStart(),
                 report.getWeekEnd(),
                 report.getAiContent(),
-                report.getGeneratedAt() != null ? report.getGeneratedAt() : Instant.now()
-        );
+                report.getGeneratedAt() != null ? report.getGeneratedAt() : Instant.now());
     }
 }

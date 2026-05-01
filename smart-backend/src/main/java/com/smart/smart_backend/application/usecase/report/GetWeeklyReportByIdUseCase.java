@@ -14,15 +14,15 @@ public class GetWeeklyReportByIdUseCase implements GetWeeklyReportByIdPort {
 
     @Override
     public Optional<WeeklyReportResult> execute(Long userId, Long reportId) {
-        return reportRepo.findAllByUserIdOrderByWeekStartDesc(userId).stream()
-                .filter(report -> report.getId().equals(reportId))
+        // Optimización: Reemplazamos el filtro en memoria (.stream().filter()) 
+        // por una consulta directa a la base de datos que ya filtra por IDs.
+        return reportRepo.findByIdAndUserId(reportId, userId)
                 .map(report -> new WeeklyReportResult(
                         report.getId(),
                         report.getWeekStart(),
                         report.getWeekEnd(),
                         report.getAiContent(),
                         report.getGeneratedAt()
-                ))
-                .findFirst();
+                ));
     }
 }
