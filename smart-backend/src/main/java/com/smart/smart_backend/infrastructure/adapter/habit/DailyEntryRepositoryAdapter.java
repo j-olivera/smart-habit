@@ -32,6 +32,7 @@ public class DailyEntryRepositoryAdapter implements DailyEntryRepositoryPort, co
     private final JpaMoodLogRepository jpaMoodLogRepository;
     private final JpaSleepLogRepository jpaSleepLogRepository;
     private final JpaPersonalLogRepository jpaPersonalLogRepository;
+    private final JpaHabitRepository jpaHabitRepository;
 
     private final DailyEntryEntityMapper dailyEntryEntityMapper;
     private final LogEntityMapper logEntityMapper;
@@ -89,7 +90,12 @@ public class DailyEntryRepositoryAdapter implements DailyEntryRepositoryPort, co
                 .collect(Collectors.groupingBy(SleepLogResponseDto::entryId));
 
         var personalLogsMap = jpaPersonalLogRepository.findAllByEntryIdIn(entryIds).stream()
-                .map(logEntityMapper::toPersonalDto)
+                .map(entity -> {
+                    String habitName = jpaHabitRepository.findById(entity.getHabitId())
+                            .map(com.smart.smart_backend.infrastructure.model.habit.HabitEntity::getName)
+                            .orElse("Unknown Habit");
+                    return logEntityMapper.toPersonalDto(entity, habitName);
+                })
                 .collect(Collectors.groupingBy(PersonalLogResponseDto::entryId));
 
         return entries.stream().map(entry -> {
@@ -130,7 +136,12 @@ public class DailyEntryRepositoryAdapter implements DailyEntryRepositoryPort, co
                 .orElse(null);
 
         List<PersonalLogResponseDto> personalLogs = jpaPersonalLogRepository.findAllByEntryIdIn(List.of(entryId)).stream()
-                .map(logEntityMapper::toPersonalDto)
+                .map(entity -> {
+                    String habitName = jpaHabitRepository.findById(entity.getHabitId())
+                            .map(com.smart.smart_backend.infrastructure.model.habit.HabitEntity::getName)
+                            .orElse("Unknown Habit");
+                    return logEntityMapper.toPersonalDto(entity, habitName);
+                })
                 .collect(Collectors.toList());
 
         return logEntityMapper.toResult(entry, studyLog, exerciseLog, nutritionLog, moodLog, sleepLog, personalLogs);

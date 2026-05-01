@@ -33,6 +33,7 @@ class DailyEntryRepositoryAdapterTest {
     @Mock private JpaMoodLogRepository jpaMoodLogRepository;
     @Mock private JpaSleepLogRepository jpaSleepLogRepository;
     @Mock private JpaPersonalLogRepository jpaPersonalLogRepository;
+    @Mock private JpaHabitRepository jpaHabitRepository;
 
     private DailyEntryRepositoryAdapter adapter;
     private LogEntityMapper logEntityMapper;
@@ -50,6 +51,7 @@ class DailyEntryRepositoryAdapterTest {
                 jpaMoodLogRepository,
                 jpaSleepLogRepository,
                 jpaPersonalLogRepository,
+                jpaHabitRepository,
                 dailyEntryEntityMapper,
                 logEntityMapper
         );
@@ -77,6 +79,20 @@ class DailyEntryRepositoryAdapterTest {
                 .subject("Java")
                 .build();
 
+        com.smart.smart_backend.infrastructure.model.habit.PersonalLogEntity personalLogEntity = com.smart.smart_backend.infrastructure.model.habit.PersonalLogEntity.builder()
+                .id(600L)
+                .entryId(100L)
+                .habitId(10L)
+                .completed(true)
+                .hours(1.0f)
+                .description("Read")
+                .build();
+
+        com.smart.smart_backend.infrastructure.model.habit.HabitEntity habitEntity = com.smart.smart_backend.infrastructure.model.habit.HabitEntity.builder()
+                .id(10L)
+                .name("Reading")
+                .build();
+
         when(jpaDailyEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(userId, start, end))
                 .thenReturn(List.of(entryEntity));
         
@@ -85,7 +101,8 @@ class DailyEntryRepositoryAdapterTest {
         when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
-        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of(personalLogEntity));
+        when(jpaHabitRepository.findById(10L)).thenReturn(Optional.of(habitEntity));
 
         // Act
         List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
@@ -96,6 +113,8 @@ class DailyEntryRepositoryAdapterTest {
         assertThat(first.id()).isEqualTo(100L);
         assertThat(first.studyLog()).isNotNull();
         assertThat(first.studyLog().subject()).isEqualTo("Java");
+        assertThat(first.personalLogs()).hasSize(1);
+        assertThat(first.personalLogs().get(0).habitName()).isEqualTo("Reading");
     }
 
     @Test
@@ -192,6 +211,20 @@ class DailyEntryRepositoryAdapterTest {
                 ExerciseLogEntity.builder().id(2L).entryId(2L).exercised(true).hours(1.5f).muscleGroups("LEGS").build()
         );
 
+        com.smart.smart_backend.infrastructure.model.habit.PersonalLogEntity personalLogEntity = com.smart.smart_backend.infrastructure.model.habit.PersonalLogEntity.builder()
+                .id(600L)
+                .entryId(1L)
+                .habitId(10L)
+                .completed(true)
+                .hours(1.0f)
+                .description("Read")
+                .build();
+
+        com.smart.smart_backend.infrastructure.model.habit.HabitEntity habitEntity = com.smart.smart_backend.infrastructure.model.habit.HabitEntity.builder()
+                .id(10L)
+                .name("Reading")
+                .build();
+
         when(jpaDailyEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(userId, start, end))
                 .thenReturn(entries);
         when(jpaStudyLogRepository.findAllByEntryIdIn(anyList())).thenReturn(studyLogs);
@@ -199,7 +232,8 @@ class DailyEntryRepositoryAdapterTest {
         when(jpaNutritionLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaMoodLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
         when(jpaSleepLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
-        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of());
+        when(jpaPersonalLogRepository.findAllByEntryIdIn(anyList())).thenReturn(List.of(personalLogEntity));
+        when(jpaHabitRepository.findById(10L)).thenReturn(Optional.of(habitEntity));
 
         // Act
         List<DailyEntryWithLogsResult> results = adapter.findWeeklyEntriesWithLogs(userId, start, end);
@@ -208,6 +242,9 @@ class DailyEntryRepositoryAdapterTest {
         assertThat(results).hasSize(2);
         assertThat(results.get(0).studyLog()).isNotNull();
         assertThat(results.get(0).exerciseLog()).isNotNull();
+        assertThat(results.get(0).personalLogs()).hasSize(1);
+        assertThat(results.get(0).personalLogs().get(0).habitName()).isEqualTo("Reading");
         assertThat(results.get(1).studyLog()).isNotNull();
+        assertThat(results.get(1).personalLogs()).isEmpty();
     }
 }

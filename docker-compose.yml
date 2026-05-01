@@ -48,6 +48,7 @@ services:
     build:
       context: ./smart-habit-frontend
       dockerfile: Dockerfile
+      network: host
     container_name: smart-frontend
     ports:
       - "4200:80"

@@ -6,9 +6,15 @@
       <p class="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-1">
         {{ today }}
       </p>
-      <h1 class="text-3xl font-extrabold text-white tracking-tight">
-        Today's Habits
-      </h1>
+      <div class="flex items-center gap-4">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">
+          Today's Habits
+        </h1>
+        <button (click)="openCreateHabitModal()" class="flex items-center gap-1 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 px-3 py-1.5 rounded-xl border border-violet-500/20 transition-colors">
+          <span class="material-symbols-outlined text-[20px]">add</span>
+          <span class="text-sm font-semibold">New Habit</span>
+        </button>
+      </div>
     </div>
 
     <!-- Progress Pill -->
@@ -118,6 +124,8 @@
 <!-- Habit Modal -->
 <app-habit-modal
   [isOpen]="isModalOpen"
+  [isCreateMode]="isCreateMode"
+  [habitId]="selectedHabitId"
   [habitType]="selectedHabitType"
   [habitTitle]="selectedHabitTitle"
   (close)="closeModal()"

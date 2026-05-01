@@ -1,10 +1,11 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { DailyEntry } from '../../models/habit/habit.model';
+import { DailyEntry, Habit } from '../../models/habit/habit.model';
 import { environment } from '../../../environments/environment';
 import { FIXED_HABITS_METADATA } from '../../models/habit/habit-metadata.constant';
 
 export interface HabitViewState {
+  id?: number; // Added to identify personal habits
   type: string;
   title: string;
   icon: string;
@@ -22,21 +23,25 @@ export interface HabitViewState {
 export class HabitStateService {
   private http = inject(HttpClient);
   private readonly API_URL = `${environment.apiUrl}/daily-entries`;
+  private readonly HABITS_API_URL = `${environment.apiUrl}/habits`;
   private readonly LOGS_API_URL = `${environment.apiUrl}/logs`;
 
   // State
   private state = signal<{
     dailyEntry: DailyEntry | null;
+    habitDefinitions: Habit[];
     loading: boolean;
     error: string | null;
   }>({
     dailyEntry: null,
+    habitDefinitions: [],
     loading: false,
     error: null
   });
 
   // --- SELECTORS (Reactividad fina con Signals) ---
   readonly dailyEntry = computed(() => this.state().dailyEntry);
+  readonly habitDefinitions = computed(() => this.state().habitDefinitions);
   readonly isLoading = computed(() => this.state().loading);
   readonly error = computed(() => this.state().error);
 
@@ -47,6 +52,7 @@ export class HabitStateService {
    */
   readonly habitsGrid = computed<HabitViewState[]>(() => {
     const entry = this.state().dailyEntry;
+    const definitions = this.state().habitDefinitions;
 
     // 1. Mapeamos los 5 hábitos fijos definidos en la constante de metadatos
     const fixedHabits: HabitViewState[] = FIXED_HABITS_METADATA.map(meta => {
@@ -69,18 +75,23 @@ export class HabitStateService {
       };
     });
 
-    // 2. Mapeamos los hábitos personales que el usuario haya creado para hoy
-    const personalHabits: HabitViewState[] = (entry?.personalLogs || []).map(log => ({
-      type: 'PERSONAL',
-      title: log.description || 'Personal Habit',
-      icon: 'star',
-      colorClass: 'text-violet-500',
-      bgClass: 'bg-violet-500/10 border-violet-500/20',
-      description: `${log.hours} hours logged`,
-      status: 'done',
-      logData: log,
-      isPersonal: true
-    }));
+    // 2. Mapeamos los hábitos personales del catálogo
+    const personalHabits: HabitViewState[] = definitions.map(habit => {
+      const log = entry?.personalLogs.find(l => l.habitId === habit.id);
+      
+      return {
+        id: habit.id,
+        type: 'PERSONAL',
+        title: habit.name,
+        icon: 'star',
+        colorClass: 'text-violet-500',
+        bgClass: 'bg-violet-500/10 border-violet-500/20',
+        description: habit.description || 'Custom habit',
+        status: log ? 'done' : 'pending',
+        logData: log || null,
+        isPersonal: true
+      };
+    });
 
     return [...fixedHabits, ...personalHabits];
   });
@@ -88,26 +99,40 @@ export class HabitStateService {
   // --- ACTIONS ---
 
   /**
-   * Recupera el estado del día actual. 
-   * FLUJO: Si no existe (404), dispara la creación automática.
+   * Recupera el estado del día actual y las definiciones de hábitos.
    */
   fetchTodayLogs(): void {
     this.state.update(s => ({ ...s, loading: true, error: null }));
     const today = new Date().toISOString().split('T')[0];
 
-    this.http.get<any>(`${this.API_URL}/${today}`).subscribe({
-      next: (response) => {
-        const data = response.data || response;
-        this.state.update(s => ({ ...s, dailyEntry: data, loading: false }));
+    // Primero traemos las definiciones
+    this.http.get<any>(this.HABITS_API_URL).subscribe({
+      next: (habitsResponse) => {
+        const habitDefinitions = habitsResponse.data || habitsResponse;
+        
+        // Luego traemos los logs de hoy
+        this.http.get<any>(`${this.API_URL}/${today}`).subscribe({
+          next: (response) => {
+            const data = response.data || response;
+            this.state.update(s => ({ 
+              ...s, 
+              habitDefinitions,
+              dailyEntry: data, 
+              loading: false 
+            }));
+          },
+          error: (err) => {
+            if (err.status === 404) {
+              this.state.update(s => ({ ...s, habitDefinitions }));
+              this.createDailyEntry(today);
+            } else {
+              this.state.update(s => ({ ...s, error: err.message, loading: false }));
+            }
+          }
+        });
       },
       error: (err) => {
-        // LÓGICA AUTOMÁTICA: Si el día no existe, lo creamos
-        if (err.status === 404) {
-          console.log('--- SDD: Day entry missing, creating automatically... ---');
-          this.createDailyEntry(today);
-        } else {
-          this.state.update(s => ({ ...s, error: err.message, loading: false }));
-        }
+        this.state.update(s => ({ ...s, error: 'Failed to load habit definitions.', loading: false }));
       }
     });
   }
@@ -116,7 +141,6 @@ export class HabitStateService {
    * Crea un nuevo registro de día (DailyEntry) en el backend.
    */
   private createDailyEntry(date: string): void {
-    // El backend espera un POST a /api/daily-entries?date=...
     this.http.post<any>(`${this.API_URL}?date=${date}`, {}).subscribe({
       next: (response) => {
         const data = response.data || response;
@@ -129,8 +153,28 @@ export class HabitStateService {
   }
 
   /**
+   * Crea una nueva definición de hábito en el catálogo.
+   */
+  createHabit(request: { name: string, description: string, type: string }): void {
+    this.state.update(s => ({ ...s, loading: true, error: null }));
+
+    this.http.post<any>(this.HABITS_API_URL, request).subscribe({
+      next: (savedHabit) => {
+        const newHabit = savedHabit.data || savedHabit;
+        this.state.update(s => ({
+          ...s,
+          habitDefinitions: [...s.habitDefinitions, newHabit],
+          loading: false
+        }));
+      },
+      error: (err) => {
+        this.state.update(s => ({ ...s, error: `Failed to create habit: ${err.message}`, loading: false }));
+      }
+    });
+  }
+
+  /**
    * Registra un log de hábito (Upsert).
-   * Envía la data al endpoint correspondiente y actualiza el estado localmente.
    */
   saveHabitLog(type: string, data: any): void {
     const entryId = this.state().dailyEntry?.id;
@@ -144,7 +188,6 @@ export class HabitStateService {
 
     this.http.post<any>(`${this.LOGS_API_URL}/${endpoint}`, payload).subscribe({
       next: (savedLog) => {
-        // Actualizamos solo la parte del estado que cambió (Optimistic-ish update)
         this.updateLocalLog(type, savedLog.data || savedLog);
       },
       error: (err) => {
@@ -154,8 +197,7 @@ export class HabitStateService {
   }
 
   /**
-   * Actualiza el signal de estado localmente sin necesidad de re-fetch.
-   * Esto mantiene la UI ultra-rápida.
+   * Actualiza el signal de estado localmente.
    */
   updateLocalLog(habitType: string, logData: any): void {
     this.state.update(s => {
@@ -169,7 +211,7 @@ export class HabitStateService {
         case 'MOOD': newEntry.moodLog = logData; break;
         case 'SLEEP': newEntry.sleepLog = logData; break;
         case 'PERSONAL':
-          const index = newEntry.personalLogs.findIndex(l => l.id === logData.id);
+          const index = newEntry.personalLogs.findIndex(l => l.habitId === logData.habitId);
           if (index >= 0) newEntry.personalLogs[index] = logData;
           else newEntry.personalLogs = [...newEntry.personalLogs, logData];
           break;

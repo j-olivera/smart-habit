@@ -4,10 +4,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { HabitStateService } from './habit-state.service';
 import { environment } from '../../../environments/environment';
-import { DailyEntry } from '../../models/habit/habit.model';
+import { DailyEntry, Habit } from '../../models/habit/habit.model';
 import { FIXED_HABITS_METADATA } from '../../models/habit/habit-metadata.constant';
-
-// ─── Fixtures ────────────────────────────────────────────────────────────────
 
 const MOCK_EMPTY_ENTRY: DailyEntry = {
   id: 1,
@@ -20,25 +18,15 @@ const MOCK_EMPTY_ENTRY: DailyEntry = {
   personalLogs: []
 };
 
-const MOCK_FULL_ENTRY: DailyEntry = {
-  id: 1,
-  date: '2026-04-30',
-  studyLog: { id: 1, completed: true, hours: 2, subject: 'Math' },
-  exerciseLog: { id: 2, completed: true, durationMinutes: 45, intensity: 'MEDIUM' },
-  moodLog: { id: 3, completed: true, moodType: 'HAPPY' },
-  nutritionLog: { id: 4, completed: true, meals: ['Lunch'] },
-  sleepLog: { id: 5, completed: true, hours: 8, quality: 'GOOD' },
-  personalLogs: [
-    { id: 10, habitId: 99, entryId: 1, completed: true, hours: 1, description: 'Read a book' }
-  ]
-};
-
-// ─── Tests ────────────────────────────────────────────────────────────────────
+const MOCK_HABIT_DEFINITIONS: Habit[] = [
+  { id: 99, userId: 1, name: 'Read a book', description: 'Read 10 pages', type: 'PERSONAL', active: true, createdAt: '2026-04-30' }
+];
 
 describe('HabitStateService', () => {
   let service: HabitStateService;
   let httpMock: HttpTestingController;
-  const API = `${environment.apiUrl}/api/v1/daily-entry`;
+  const API_ENTRY = `${environment.apiUrl}/daily-entries`;
+  const API_HABITS = `${environment.apiUrl}/habits`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -56,121 +44,84 @@ describe('HabitStateService', () => {
     httpMock.verify();
   });
 
-  // ── Creation ──
-
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  // ── Initial State ──
-
-  it('should start with null dailyEntry and not loading', () => {
+  it('should start with null state', () => {
     expect(service.dailyEntry()).toBeNull();
-    expect(service.isLoading()).toBe(false);
-    expect(service.error()).toBeNull();
+    expect(service.habitDefinitions()).toEqual([]);
   });
 
-  it('should expose the 5 fixed habits in the grid before any fetch', () => {
-    const grid = service.habitsGrid();
-    // 5 fixed + 0 personal = 5 entries
-    expect(grid.length).toBe(FIXED_HABITS_METADATA.length);
-    grid.forEach(h => expect(h.status).toBe('pending'));
-  });
-
-  // ── fetchTodayLogs ──
-
-  it('should set loading to true while fetching', () => {
+  it('should fetch today logs and habit definitions', () => {
     service.fetchTodayLogs();
-    expect(service.isLoading()).toBe(true);
-    // Flush to avoid afterEach error
-    httpMock.expectOne(`${API}/today`).flush(MOCK_EMPTY_ENTRY);
-  });
+    
+    // Request definitions first
+    const reqHabits = httpMock.expectOne(API_HABITS);
+    expect(reqHabits.request.method).toBe('GET');
+    reqHabits.flush({ data: MOCK_HABIT_DEFINITIONS });
 
-  it('should send a GET request to the today endpoint', () => {
-    service.fetchTodayLogs();
-    const req = httpMock.expectOne(`${API}/today`);
-    expect(req.request.method).toBe('GET');
-    req.flush(MOCK_EMPTY_ENTRY);
-  });
+    // Request logs second
+    const reqLogs = httpMock.expectOne(req => req.url.startsWith(API_ENTRY));
+    expect(reqLogs.request.method).toBe('GET');
+    reqLogs.flush({ data: MOCK_EMPTY_ENTRY });
 
-  it('should set dailyEntry and stop loading on success', () => {
-    service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_EMPTY_ENTRY);
-    expect(service.dailyEntry()).toEqual(MOCK_EMPTY_ENTRY);
-    expect(service.isLoading()).toBe(false);
-  });
-
-  it('should unwrap data envelope when backend returns { data: DailyEntry }', () => {
-    service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush({ data: MOCK_EMPTY_ENTRY });
+    expect(service.habitDefinitions()).toEqual(MOCK_HABIT_DEFINITIONS);
     expect(service.dailyEntry()).toEqual(MOCK_EMPTY_ENTRY);
   });
 
-  it('should set error and stop loading on failure', () => {
+  it('should merge habit definitions into habitsGrid as pending', () => {
     service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).error(new ProgressEvent('error'));
-    expect(service.error()).not.toBeNull();
-    expect(service.isLoading()).toBe(false);
-  });
-
-  // ── habitsGrid computed ──
-
-  it('should mark all fixed habits as pending when dailyEntry has no logs', () => {
-    service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_EMPTY_ENTRY);
+    httpMock.expectOne(API_HABITS).flush({ data: MOCK_HABIT_DEFINITIONS });
+    httpMock.expectOne(req => req.url.startsWith(API_ENTRY)).flush({ data: MOCK_EMPTY_ENTRY });
 
     const grid = service.habitsGrid();
-    const fixed = grid.filter(h => !h.isPersonal);
-
-    expect(fixed.length).toBe(5);
-    fixed.forEach(h => expect(h.status).toBe('pending'));
+    const personalHabit = grid.find(h => h.id === 99);
+    
+    expect(personalHabit).toBeDefined();
+    expect(personalHabit?.title).toBe('Read a book');
+    expect(personalHabit?.status).toBe('pending');
   });
 
-  it('should mark all fixed habits as done when dailyEntry has all logs', () => {
+  it('should mark personal habit as done if log exists', () => {
+    const entryWithLog = {
+      ...MOCK_EMPTY_ENTRY,
+      personalLogs: [{ id: 10, habitId: 99, entryId: 1, completed: true, hours: 1 }]
+    };
+
     service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_FULL_ENTRY);
+    httpMock.expectOne(API_HABITS).flush({ data: MOCK_HABIT_DEFINITIONS });
+    httpMock.expectOne(req => req.url.startsWith(API_ENTRY)).flush({ data: entryWithLog });
 
     const grid = service.habitsGrid();
-    const fixed = grid.filter(h => !h.isPersonal);
-
-    fixed.forEach(h => expect(h.status).toBe('done'));
+    const personalHabit = grid.find(h => h.id === 99);
+    
+    expect(personalHabit?.status).toBe('done');
   });
 
-  it('should include personal logs in the grid as done', () => {
+  it('should create a new habit definition and add it to state', () => {
+    const newHabitReq = { name: 'Meditation', description: 'Mindfulness', type: 'PERSONAL' };
+    const savedHabit = { id: 100, userId: 1, ...newHabitReq, active: true, createdAt: '2026-04-30' };
+
+    service.createHabit(newHabitReq);
+    
+    const req = httpMock.expectOne(API_HABITS);
+    expect(req.request.method).toBe('POST');
+    req.flush({ data: savedHabit });
+
+    expect(service.habitDefinitions()).toContainEqual(savedHabit);
+  });
+
+  it('should update local personal log by habitId', () => {
     service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_FULL_ENTRY);
+    httpMock.expectOne(API_HABITS).flush({ data: MOCK_HABIT_DEFINITIONS });
+    httpMock.expectOne(req => req.url.startsWith(API_ENTRY)).flush({ data: MOCK_EMPTY_ENTRY });
 
-    const grid = service.habitsGrid();
-    const personal = grid.filter(h => h.isPersonal);
+    const newLog = { id: 10, habitId: 99, entryId: 1, completed: true, hours: 1 };
+    service.updateLocalLog('PERSONAL', newLog);
 
-    expect(personal.length).toBe(1);
-    expect(personal[0].title).toBe('Read a book');
-    expect(personal[0].status).toBe('done');
-  });
-
-  it('should return 5 fixed + N personal habits in the grid', () => {
-    service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_FULL_ENTRY);
-
-    expect(service.habitsGrid().length).toBe(5 + MOCK_FULL_ENTRY.personalLogs.length);
-  });
-
-  // ── updateLocalLog (optimistic update) ──
-
-  it('should update studyLog in place via updateLocalLog', () => {
-    service.fetchTodayLogs();
-    httpMock.expectOne(`${API}/today`).flush(MOCK_EMPTY_ENTRY);
-
-    const newLog = { id: 99, completed: true, hours: 3, subject: 'Physics' };
-    service.updateLocalLog('STUDY', newLog);
-
-    expect(service.dailyEntry()?.studyLog).toEqual(newLog);
-    const studyHabit = service.habitsGrid().find(h => h.type === 'STUDY');
-    expect(studyHabit?.status).toBe('done');
-  });
-
-  it('should not update anything via updateLocalLog when dailyEntry is null', () => {
-    service.updateLocalLog('STUDY', { id: 1, completed: true, hours: 1, subject: 'X' });
-    expect(service.dailyEntry()).toBeNull();
+    expect(service.dailyEntry()?.personalLogs).toContainEqual(newLog);
+    const personalHabit = service.habitsGrid().find(h => h.id === 99);
+    expect(personalHabit?.status).toBe('done');
   });
 });

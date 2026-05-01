@@ -87,14 +87,14 @@ public class LogEntityMapper {
                 entity.getNapNeeded());
     }
 
-    public PersonalLogResponseDto toPersonalDto(PersonalLogEntity entity) {
+    public PersonalLogResponseDto toPersonalDto(PersonalLogEntity entity, String habitName) {
         if (entity == null)
             return null;
         return new PersonalLogResponseDto(
                 entity.getId(),
                 entity.getHabitId(),
                 entity.getEntryId(),
-                null,
+                habitName,
                 entity.getCompleted(),
                 entity.getHours(),
                 entity.getDescription());

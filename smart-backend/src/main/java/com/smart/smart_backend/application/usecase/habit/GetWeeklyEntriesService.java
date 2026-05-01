@@ -4,9 +4,6 @@ import com.smart.smart_backend.application.dto.habit.DailyEntryWithLogsResult;
 import com.smart.smart_backend.application.dto.habit.WeeklyEntriesReportDto;
 import com.smart.smart_backend.application.port.in.habit.GetWeeklyEntriesUseCase;
 import com.smart.smart_backend.application.port.out.habit.DailyEntryRepositoryPort;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;

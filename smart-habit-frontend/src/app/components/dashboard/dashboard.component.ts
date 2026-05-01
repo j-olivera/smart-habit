@@ -42,8 +42,10 @@ export class DashboardComponent implements OnInit {
 
   // Modal State
   isModalOpen = false;
+  isCreateMode = false;
   selectedHabitType: string | null = null;
   selectedHabitTitle: string = '';
+  selectedHabitId: number | null = null;
 
   ngOnInit() {
     this.habitState.fetchTodayLogs();
@@ -53,6 +55,15 @@ export class DashboardComponent implements OnInit {
     if (habit.status === 'done') return;
     this.selectedHabitType = habit.type;
     this.selectedHabitTitle = habit.title;
+    this.selectedHabitId = habit.id || null;
+    this.isCreateMode = false;
+    this.isModalOpen = true;
+  }
+
+  openCreateHabitModal() {
+    this.selectedHabitType = 'CREATE_HABIT';
+    this.selectedHabitTitle = 'New Habit';
+    this.isCreateMode = true;
     this.isModalOpen = true;
   }
 
@@ -60,5 +71,7 @@ export class DashboardComponent implements OnInit {
     this.isModalOpen = false;
     this.selectedHabitType = null;
     this.selectedHabitTitle = '';
+    this.selectedHabitId = null;
+    this.isCreateMode = false;
   }
 }

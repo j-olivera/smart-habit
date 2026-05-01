@@ -2,7 +2,7 @@ package com.smart.smart_backend.infrastructure.repository;
 
 import com.smart.smart_backend.domain.model.token.RefreshToken;
 import com.smart.smart_backend.infrastructure.adapter.security.RefreshTokenRepositoryAdapter;
-import com.smart.smart_backend.infrastructure.mapper.token.RefreshTokenEntityMapperImpl;
+import com.smart.smart_backend.infrastructure.mapper.token.RefreshTokenEntityMapper;
 import com.smart.smart_backend.infrastructure.model.user.UserEntity;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import({ RefreshTokenRepositoryAdapter.class, RefreshTokenEntityMapperImpl.class })
+@Import({ RefreshTokenRepositoryAdapter.class, RefreshTokenEntityMapper.class })
 class RefreshTokenRepositoryAdapterTest {
 
     @Autowired

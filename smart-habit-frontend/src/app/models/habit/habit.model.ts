@@ -49,9 +49,20 @@ export interface PersonalLog {
   id: number;
   habitId: number;
   entryId: number;
+  habitName?: string;
   completed: boolean;
   hours: number;
   description?: string;
+}
+
+export interface Habit {
+  id: number;
+  userId: number;
+  name: string;
+  type: 'PERSONAL';
+  description: string;
+  active: boolean;
+  createdAt: string;
 }
 
 export interface DailyEntry {
