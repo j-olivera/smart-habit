@@ -19,10 +19,13 @@ let refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const token = authService.getToken();
 
   // 1. Clonar la petición para agregar withCredentials y que viajen las cookies
+  // y también agregar el header Authorization si tenemos un token
   let authReq = req.clone({
-    withCredentials: true
+    withCredentials: true,
+    setHeaders: token ? { Authorization: `Bearer ${token}` } : {}
   });
 
   // 2. Pasar la petición al siguiente manejador y atrapar posibles errores

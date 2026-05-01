@@ -56,12 +56,22 @@ export class RegisterComponent {
     this.authService.register(request).subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        // Despues se definira hacia donde redirigimos: al login o directo adentro
         this.router.navigate(['/login']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isSubmitting.set(false);
-        this.globalError.set(err.error?.message || 'The email address provided is already in use. Please try logging in or use a different email.');
+        
+        let message = 'An unexpected error occurred. Please try again later.';
+        
+        if (err.code === 'EMAIL_TAKEN') {
+          message = 'The email address provided is already in use. Please try logging in or use a different email.';
+        } else if (err.code === 'SERVER_DOWN') {
+          message = 'The server is currently unavailable. Please check your connection.';
+        } else if (err.code === 'INSUFFICIENT_DATA') {
+          message = 'Please check the provided data. Some fields are missing or invalid.';
+        }
+        
+        this.globalError.set(message);
       }
     });
   }

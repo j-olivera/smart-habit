@@ -20,11 +20,18 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
+  getToken(): string | null {
+    return localStorage.getItem('accessToken');
+  }
+
   login(request: LoginRequest): Observable<TokenResponse> {
     return this.http.post<TokenResponse>(`${this.baseUrl}/login`, request, {
       withCredentials: true
     }).pipe(
-      tap(() => localStorage.setItem('isLoggedIn', 'true')),
+      tap((res) => {
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('accessToken', res.accessToken);
+      }),
       catchError(this.handleError)
     );
   }
@@ -32,7 +39,12 @@ export class AuthService {
   refresh(): Observable<TokenResponse> {
     return this.http.post<TokenResponse>(`${this.baseUrl}/refresh`, {}, {
       withCredentials: true
-    }).pipe(catchError(this.handleError));
+    }).pipe(
+      tap((res) => {
+        localStorage.setItem('accessToken', res.accessToken);
+      }),
+      catchError(this.handleError)
+    );
   }
 
   logout(): void {
@@ -42,12 +54,14 @@ export class AuthService {
       next: () => {
         // Limpiamos todo al salir
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('accessToken');
         this.currentUser.set(null);
         window.location.href = '/login'; // Redirección dura para limpiar estados
       },
       error: () => {
         // Incluso si el server falla, limpiamos el front por seguridad
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('accessToken');
         window.location.href = '/login';
       }
     });

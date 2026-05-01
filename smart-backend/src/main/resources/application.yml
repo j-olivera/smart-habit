@@ -29,6 +29,15 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
 
+  ai:
+    ollama:
+      base-url: ${SPRING_AI_OLLAMA_BASE_URL:http://localhost:11434}
+      chat:
+        options:
+          model: ${SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL:phi3}
+          temperature: 0.3
+          num-predict: 800
+
 server:
   port: ${SERVER_PORT:8080}
 
@@ -53,8 +62,3 @@ logging:
     root: INFO
     com.smart: DEBUG
     org.hibernate.SQL: DEBUG
-
-spring.ai.ollama.base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
-spring.ai.ollama.chat.options.model: phi3
-spring.ai.ollama.chat.options.temperature: 0.3
-spring.ai.ollama.chat.options.num-predict: 800
