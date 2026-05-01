@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort {
@@ -30,6 +32,13 @@ public class WeeklyReportRepositoryAdapter implements WeeklyReportRepositoryPort
         WeeklyReportJpaEntity entity = toEntity(report);
         WeeklyReportJpaEntity saved = repository.save(entity);
         return toDomain(saved);
+    }
+
+    @Override
+    public List<WeeklyReport> findAllByUserIdOrderByWeekStartDesc(Long userId) {
+        return repository.findByUserIdOrderByWeekStartDesc(userId).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     private WeeklyReport toDomain(WeeklyReportJpaEntity entity) {

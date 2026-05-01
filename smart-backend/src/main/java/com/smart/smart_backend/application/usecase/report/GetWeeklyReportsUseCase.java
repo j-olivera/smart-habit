@@ -1,0 +1,22 @@
+package com.smart.smart_backend.application.usecase.report;
+
+import com.smart.smart_backend.application.dto.report.WeeklyReportSummary;
+import com.smart.smart_backend.application.port.in.report.GetWeeklyReportsPort;
+import com.smart.smart_backend.application.port.out.report.WeeklyReportRepositoryPort;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+public class GetWeeklyReportsUseCase implements GetWeeklyReportsPort {
+
+    private final WeeklyReportRepositoryPort reportRepo;
+
+    @Override
+    public List<WeeklyReportSummary> execute(Long userId) {
+        return reportRepo.findAllByUserIdOrderByWeekStartDesc(userId).stream()
+                .map(WeeklyReportSummary::from)
+                .collect(Collectors.toList());
+    }
+}
