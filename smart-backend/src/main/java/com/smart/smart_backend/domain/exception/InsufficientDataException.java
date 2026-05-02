@@ -4,8 +4,7 @@ public class InsufficientDataException extends RuntimeException {
 
     public InsufficientDataException(int daysFound, int minRequired) {
         super(
-            "Se necesitan al menos %d días registrados. Días encontrados: %d"
-                .formatted(minRequired, daysFound)
-        );
+                "At least %d logged days are required. Days found: %d"
+                        .formatted(minRequired, daysFound));
     }
 }

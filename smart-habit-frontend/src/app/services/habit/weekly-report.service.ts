@@ -24,7 +24,7 @@ export interface WeeklyReportSummary {
 })
 export class WeeklyReportService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/reports`;
+  private apiUrl = `${environment.apiUrl}/reports`;
 
   getReports(): Observable<WeeklyReportSummary[]> {
     return this.http.get<WeeklyReportSummary[]>(this.apiUrl);

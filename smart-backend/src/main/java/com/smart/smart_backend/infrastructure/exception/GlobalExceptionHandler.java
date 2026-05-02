@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
         error.put("timestamp", LocalDateTime.now());
         error.put("status", HttpStatus.SERVICE_UNAVAILABLE.value());
         error.put("error", "Service Unavailable");
-        error.put("message", "El servicio de IA no está disponible temporalmente. Intenta más tarde.");
+        error.put("message", "The AI service is temporarily unavailable. Please try again later.");
         return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
     }
 

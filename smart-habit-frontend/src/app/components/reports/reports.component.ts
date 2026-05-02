@@ -54,7 +54,7 @@ export class ReportsComponent implements OnInit {
 
   selectReport(id: number): void {
     if (this.selectedReport()?.id === id) return;
-    
+
     this.isLoadingDetail.set(true);
     this.reportService.getReportById(id).subscribe({
       next: (report) => {
@@ -72,7 +72,7 @@ export class ReportsComponent implements OnInit {
   generateNewReport(): void {
     this.isGenerating.set(true);
     this.error.set(null);
-    
+
     this.reportService.generateReport().subscribe({
       next: (newReport) => {
         this.selectedReport.set(newReport);
@@ -82,21 +82,18 @@ export class ReportsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error generating report', err);
-        if (err.status === 400) {
-          this.error.set('Insufficient data: You need at least 3 logged days this week.');
-        } else {
-          this.error.set('Failed to generate report. Please try again later.');
-        }
+        const errorMessage = err.error?.message || 'Failed to generate report. Please try again later.';
+        this.error.set(errorMessage);
         this.isGenerating.set(false);
       }
     });
   }
 
   formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString(undefined, { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
+    return new Date(dateStr).toLocaleDateString(undefined, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
     });
   }
 }
